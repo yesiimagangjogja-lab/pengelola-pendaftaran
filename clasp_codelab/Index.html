@@ -1,0 +1,2832 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InternAdmin - Dashboard Admin Pendaftaran Magang</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #f4f6fb; color: #1f2937;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px; line-height: 1.45;
+  }
+  .app { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 244px; flex: 0 0 244px; background: #fff; border-right: 1px solid #e5e7eb;
+    padding: 14px 12px 12px; display: flex; flex-direction: column; gap: 10px;
+    transition: width .18s ease, flex-basis .18s ease;
+  }
+  .sidebar.cil { width: 66px; flex-basis: 66px; padding: 14px 8px 12px; }
+  .sidebar.cil .logo-teks, .sidebar.cil .grup-label, .sidebar.cil .nav .lbl, .sidebar.cil .nav .n,
+  .sidebar.cil .side-blok h2, .sidebar.cil .nm, .sidebar.cil .count, .sidebar.cil .side-foot .f-teks,
+  .sidebar.cil .side-foot button { display: none; }
+  .sidebar.cil #nav button, .sidebar.cil #brandList button { justify-content: center; padding: 9px 0; }
+  .sidebar.cil #btnSampit .ikon { transform: rotate(180deg); }
+  .sidebar.cil .logo { justify-content: center; }
+  .sidebar.cil .brand-list .inisial { margin: 0; }
+  .ikon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .logo { display: flex; align-items: center; gap: 9px; padding: 2px 2px 6px; }
+  .logo-mark {
+    width: 34px; height: 34px; flex: none; border-radius: 10px; background: #eef1ff; color: #4338ca;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-teks { min-width: 0; flex: 1; }
+  .logo h1 { margin: 0; font-size: 14.5px; line-height: 1.25; letter-spacing: .1px; }
+  .logo p { margin: 1px 0 0; font-size: 11px; color: #6b7280; line-height: 1.3; }
+  #btnSampit {
+    appearance: none; width: 26px; height: 26px; flex: none; border-radius: 999px; cursor: pointer;
+    border: 1px solid #e5e7eb; background: #fff; color: #6b7280; display: flex; align-items: center; justify-content: center;
+  }
+  #btnSampit:hover { background: #f5f6fb; color: #4f46e5; }
+  .grup-label { margin: 8px 4px 2px; font-size: 10.5px; font-weight: 700; letter-spacing: .5px; color: #9ca3af; }
+  .nav { display: flex; flex-direction: column; gap: 3px; }
+  .nav button {
+    appearance: none; background: none; border: 0; border-left: 3px solid transparent;
+    text-align: left; font: inherit; font-weight: 500; color: #4b5563; cursor: pointer;
+    padding: 8px 10px; border-radius: 0 9px 9px 0; display: flex; align-items: center; gap: 10px;
+  }
+  .nav button:hover { background: #f5f6fb; color: #1f2937; }
+  .nav button.active { background: #eef1ff; border-left-color: #4f46e5; color: #3730a3; font-weight: 600; }
+  .nav .lbl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav .n { font-size: 11px; color: #6b7280; font-weight: 600; }
+  .nav .n.baru-badge { background: #dc2626; color: #fff; border-radius: 999px; padding: 1px 7px; font-size: 10.5px; }
+  .side-blok { margin-top: 4px; }
+  .side-blok h2 { margin: 0 4px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .5px; color: #9ca3af; }
+  .brand-list { display: flex; flex-direction: column; gap: 3px; }
+  .brand-list button {
+    appearance: none; background: none; border: 0; text-align: left; font: inherit; cursor: pointer;
+    padding: 7px 9px; border-radius: 9px; display: flex; align-items: center; gap: 9px; color: #4b5563;
+  }
+  .brand-list button:hover { background: #f5f6fb; }
+  .brand-list button.active { background: #eef1ff; color: #3730a3; font-weight: 600; }
+  .brand-list .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+  .brand-list .nm em { font-style: normal; color: #9ca3af; font-size: 10.5px; }
+  .inisial {
+    width: 24px; height: 24px; flex: none; border-radius: 999px; background: #eef1ff; color: #3730a3;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px;
+  }
+  .side-foot {
+    margin-top: auto; display: flex; align-items: center; gap: 9px; padding: 9px; border-radius: 11px;
+    border: 1px solid #eceef3; background: #fafbfe; font-size: 12px; color: #6b7280;
+  }
+  .side-foot .f-teks { flex: 1; min-width: 0; }
+  .side-foot .f-teks strong { display: block; color: #111827; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .side-foot a { color: #4f46e5; text-decoration: none; font-size: 11.5px; }
+  .count {
+    background: #eef1ff; color: #3730a3; border-radius: 999px; font-size: 11px; font-weight: 600; padding: 1px 8px; white-space: nowrap;
+  }
+  .count.baru { background: #fef3c7; color: #92400e; }
+
+  /* Konten */
+  .konten { flex: 1; min-width: 0; }
+  .page-head { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 13px 22px; display: flex; align-items: center; gap: 14px; }
+  .page-head h2 { margin: 0; font-size: 17px; }
+  .page-head p { margin: 1px 0 0; font-size: 12px; color: #6b7280; }
+  .page-head .right { margin-left: auto; display: flex; gap: 8px; }
+  .brand-tabs { display: flex; align-items: center; gap: 18px; padding: 0 22px; background: #fff; border-bottom: 1px solid #e5e7eb; }
+  .brand-tabs button { appearance: none; background: none; border: 0; font: inherit; font-size: 13px; font-weight: 600; color: #6b7280; padding: 10px 2px 11px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .brand-tabs button.on { color: #4f46e5; border-bottom-color: #4f46e5; }
+  .brand-tabs .kembali { color: #6b7280; font-weight: 600; border-bottom: 0; padding-left: 0; }
+  .brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .brand-kartu { position: relative; text-align: left; cursor: pointer; border: 1px solid #e5e7eb; background: #fff; border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 11px; font: inherit; }
+  .brand-kartu:hover { border-color: #c7d2fe; box-shadow: 0 4px 14px rgba(79,70,229,.10); }
+  /* Tombol hapus di pojok kanan atas kartu: kelihatan saat kartu disentuh, jadi tidak mengganggu baca. */
+  .brand-kartu .buang { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; line-height: 1; border: 1px solid #e5e7eb; border-radius: 7px; background: #fff; color: #6b7280; font-size: 15px; cursor: pointer; opacity: 0; transition: opacity .12s, color .12s, border-color .12s; }
+  .brand-kartu:hover .buang, .brand-kartu:focus-within .buang { opacity: 1; }
+  .brand-kartu .buang:hover { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
+  .brand-kartu .inisial { width: 34px; height: 34px; border-radius: 9px; background: #eef1ff; color: #3730a3; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex: none; }
+  .brand-kartu .nm { font-weight: 600; font-size: 14px; color: #111827; }
+  .brand-kartu .sub { font-size: 12px; color: #6b7280; }
+  main { padding: 16px 22px 36px; }
+  .sasaran { font-size: 12.5px; color: #6b7280; margin-bottom: 10px; }
+  .sasaran strong { color: #3730a3; }
+  .kepala-sasaran { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .kepala-sasaran h3 { margin: 0; font-size: 13px; }
+  .kepala-sasaran span { margin-left: auto; display: flex; gap: 6px; }
+  tbody tr[data-pilih-program] { cursor: pointer; }
+  .grid { display: grid; gap: 11px; }
+  .tiles { grid-template-columns: repeat(auto-fit, minmax(152px, 1fr)); gap: 10px; }
+  .tile {
+    appearance: none; position: relative; overflow: hidden; background: #fff; border: 1px solid #e6e8ef; border-radius: 12px;
+    padding: 12px 14px 12px 16px; text-align: left; font: inherit; color: inherit; cursor: pointer; width: 100%;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04); transition: box-shadow .15s, transform .15s, border-color .15s;
+  }
+  .tile::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #a5b4fc; }
+  .tile[data-k='baru']::before { background: #f59e0b; }
+  .tile[data-k='belum-followup']::before { background: #fb923c; }
+  .tile[data-k='Diterima']::before { background: #0ea5e9; }
+  .tile[data-k='Lulus']::before { background: #16a34a; }
+  .tile[data-k='Ditolak']::before { background: #ef4444; }
+  .tile[data-k='Dikeluarkan']::before { background: #f97316; }
+  .tile:hover { border-color: #c7d2fe; box-shadow: 0 4px 14px rgba(79, 70, 229, .10); transform: translateY(-1px); }
+  .tile.active { border-color: #4f46e5; box-shadow: 0 0 0 1px #4f46e5 inset; }
+  .tile .num { font-size: 27px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.15; }
+  .tile .lbl { font-size: 11.5px; color: #6b7280; margin-top: 2px; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 13px 15px; }
+  .card h3 { margin: 0 0 9px; font-size: 13px; }
+  .sambung { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 9px; padding: 9px 11px; font-size: 12px; color: #14532d; margin-bottom: 11px; }
+  .sambung.gagal { background: #fef2f2; border-color: #fecaca; color: #7f1d1d; }
+  .sambung .tit { flex: 1; }
+  .card .hint { font-size: 11.5px; color: #6b7280; margin: -4px 0 10px; }
+  button.card { font: inherit; color: inherit; text-align: left; cursor: pointer; width: 100%; transition: border-color .15s, box-shadow .15s, transform .15s; }
+  button.card:hover { border-color: #c7d2fe; box-shadow: 0 4px 14px rgba(79, 70, 229, .08); transform: translateY(-1px); }
+  button.card:disabled { cursor: default; }
+  button.card:disabled:hover { border-color: #e5e7eb; box-shadow: none; transform: none; }
+  .baris-list .isi.bisa, .bars .row.bisa { cursor: pointer; }
+  .dua { grid-template-columns: 1fr 1fr; }
+  /* Kartu konfigurasi berdampingan MAKSIMAL 2 kolom (3 kolom terlalu sempit lalu jadi panjang),
+     melipat ke baris baru, dan wadahnya dibatasi tinggi supaya halamannya tidak memanjang. BARU-3.88 */
+  .tumpuk-integrasi {
+    display: grid; grid-template-columns: 1fr; gap: 14px; align-items: start;
+    max-height: 92vh; overflow-y: auto; padding: 2px 10px 14px 2px; scrollbar-width: thin;
+  }
+  @media (min-width: 820px) { .tumpuk-integrasi { grid-template-columns: repeat(2, 1fr); } }
+  .tanda-bawah { display: flex; align-items: center; gap: 8px; margin: 2px 0 10px; font-size: 12px; color: #6b7280; }
+  .tanda-bawah b { color: #3730a3; }
+  .tanda-bawah .panah-bawah { color: #9ca3af; font-size: 14px; }
+  .dua > .card { display: flex; flex-direction: column; }
+  .tiga { grid-template-columns: repeat(3, 1fr); }
+  .btn {
+    appearance: none; font: inherit; font-weight: 600; cursor: pointer; border-radius: 8px;
+    border: 1px solid #4f46e5; background: #4f46e5; color: #fff; padding: 7px 12px;
+  }
+  .btn.ghost { background: #fff; color: #4f46e5; }
+  .btn.subtle { background: #fff; border-color: #d8dee9; color: #374151; font-weight: 500; }
+  .btn.kecil { padding: 5px 9px; font-size: 12px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  input, select, textarea {
+    font: inherit; padding: 6px 9px; border: 1px solid #d8dee9; border-radius: 7px; background: #fff; color: #1f2937;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid #c7d2fe; border-color: #4f46e5; }
+  .filter { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 8px; align-items: center; margin-bottom: 12px; }
+  .filter input, .filter select { width: 100%; min-width: 0; }
+  .filter .sub { color: #6b7280; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef1f5; vertical-align: top; }
+  /* Tabel kecil (daftar sertifikat): kolom menempel isi, tidak direntang sampai penuh. */
+  table.rapat { width: auto; }
+  table.rapat th, table.rapat td { padding: 7px 18px 7px 0; }
+  th { font-size: 11.5px; color: #6b7280; font-weight: 600; background: #fafbfe; position: sticky; top: 0; }
+  tbody tr:hover { background: #f8f9fd; }
+  tbody tr.selected { background: #eef1ff; }
+  .nama { font-weight: 600; }
+  .sub { color: #6b7280; font-size: 12px; }
+  .pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .pill.hijau { background: #dcfce7; color: #15803d; }
+  .pill.merah { background: #fee2e2; color: #b91c1c; }
+  .pill.Seleksi { background: #e0e7ff; color: #4338ca; }
+  .pill.Diterima { background: #dbeafe; color: #1d4ed8; }
+  .pill.Lulus { background: #dcfce7; color: #15803d; }
+  .pill.Dikeluarkan { background: #ffedd5; color: #c2410c; }
+  .pill.Ditolak { background: #fee2e2; color: #b91c1c; }
+
+  .tag-baru { background: #fef3c7; color: #92400e; border-radius: 999px; padding: 1px 8px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .kosong { padding: 24px; color: #6b7280; text-align: center; }
+  .baris-list { display: flex; flex-direction: column; gap: 2px; }
+  .baris-list .isi { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 8px; }
+  .baris-list .isi:hover { background: #f5f6fb; }
+  .baris-list .grow { flex: 1; min-width: 0; }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 999px; background: #eef1ff; color: #3730a3;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex: 0 0 28px;
+  }
+  /* Grafik */
+  .bars { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: center; }
+  .bars .row { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 3px 6px; margin: -3px -6px; border-radius: 8px; }
+  .bars .row.bisa:hover { background: #f5f6fb; }
+  .bars .lab { display: flex; justify-content: space-between; font-size: 12px; color: #4b5563; }
+  .bars .lab .angka { font-weight: 600; color: #1f2937; }
+  .bars .lab .angka small { font-weight: 500; color: #9ca3af; }
+  .bars .track { height: 8px; background: #eef1f5; border-radius: 999px; overflow: hidden; }
+  .bars .fill { height: 100%; background: #6366f1; border-radius: 999px; min-width: 6px; }
+  .bagan { display: flex; gap: 5px; align-items: stretch; flex: 1; padding-top: 2px; }
+  .bagan .k { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+  .bagan .tiang { height: 152px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; border-bottom: 1px solid #dfe3ec; }
+  .bagan .nilai { font-size: 11px; font-weight: 600; color: #374151; }
+  .bagan .batang { width: 78%; min-width: 16px; max-width: 150px; background: linear-gradient(180deg, #a5b4fc, #6366f1); border-radius: 5px 5px 0 0; min-height: 3px; }
+  .bagan .cap { font-size: 10px; color: #6b7280; text-align: center; line-height: 1.2; margin-top: 5px; height: 25px; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  /* Versi kecil buat Laporan & Statistik: diagram cuma pendukung, jangan mendominasi halaman. */
+  .bagan.cilik .tiang { height: 84px; }
+  .bagan.cilik .batang { max-width: 22px; }
+  .bagan.cilik .nilai { font-size: 10px; }
+  .bagan.cilik .cap { font-size: 9.5px; height: 22px; margin-top: 4px; }
+  /* Pipeline seleksi */
+  .kolom-status { display: grid; gap: 10px; align-items: start; overflow-x: auto; padding-bottom: 6px; }
+  .kolom-status > div { background: #f8f9fc; border: 1px solid #e6e8ef; border-top: 3px solid #a5b4fc; border-radius: 12px; padding: 12px; }
+  .kolom-status > div.kosongKolom { background: #fbfcfe; border-style: dashed; border-top-style: solid; opacity: .72; }
+  .kolom-status .kosong { padding: 10px 0 2px; font-size: 12px; }
+  .kolom-status > div:nth-child(2) { border-top-color: #3b82f6; }
+  .kolom-status > div:nth-child(3) { border-top-color: #0ea5e9; }
+  .kolom-status > div:nth-child(4) { border-top-color: #22c55e; }
+  .kolom-status > div:nth-child(5) { border-top-color: #f97316; }
+  .kolom-status > div:nth-child(6) { border-top-color: #ef4444; }
+  .kolom-status > div:nth-child(7) { border-top-color: #6b7280; }
+  .kolom-status .kepala { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1px; }
+  .kolom-status .kepala strong { font-size: 13.5px; }
+  .kolom-status > div > .sub { margin-bottom: 10px; }
+  .kartu {
+    background: #fff; border: 1px solid #e6e8ef; border-radius: 10px; padding: 10px 11px; margin-bottom: 8px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 2px; transition: border-color .15s, box-shadow .15s;
+  }
+  .kartu:hover { border-color: #c7d2fe; box-shadow: 0 3px 10px rgba(17, 24, 39, .06); }
+  .kartu[draggable] { cursor: grab; }
+  .kartu.seret { opacity: .4; }
+  .kolom-status > div.sasar { background: #eef1ff; box-shadow: inset 0 0 0 2px #a5b4fc; border-radius: 12px; }
+  .kartu .nm { font-weight: 600; font-size: 13px; }
+  .kartu .pill { margin-top: 6px; align-self: flex-start; }
+  .paginasi { display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 12px; font-size: 13px; color: #6b7280; }
+  /* Panel detail */
+  .panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 470px; max-width: 100%; background: #fff;
+    border-left: 1px solid #e5e7eb; box-shadow: -12px 0 30px rgba(17, 24, 39, .07);
+    transform: translateX(100%); transition: transform .18s ease-out; overflow-y: auto; z-index: 20;
+  }
+  .panel.open { transform: translateX(0); }
+  .panel-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px 18px; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; background: #fff; z-index: 2; }
+  .panel-head h3 { margin: 0; font-size: 17px; }
+  .close { appearance: none; background: none; border: 0; font-size: 22px; line-height: 1; color: #6b7280; cursor: pointer; }
+  .panel-body { padding: 14px 16px 28px; background: #f7f8fc; }
+  .panel-body > .section, .panel-body > dl.kv, .panel-body > details {
+    background: #fff; border: 1px solid #e9ecf3; border-radius: 12px; padding: 13px 14px; margin-bottom: 11px;
+  }
+  .panel-body > dl.kv { margin-bottom: 11px; }
+  .kv { display: grid; grid-template-columns: 132px 1fr; gap: 5px 10px; margin: 0 0 6px; }
+  .kv dt { color: #6b7280; font-size: 12px; }
+  .kv dd { margin: 0; font-size: 13px; word-break: break-word; }
+  .kv a { color: #4f46e5; text-decoration: none; }
+  .section { margin-top: 0; padding: 0; border: 0; }
+  .section h4 { margin: 0 0 10px; font-size: 12.5px; color: #374151; }
+  .status-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+  .status-row .btn { width: 100%; padding: 7px 6px; font-size: 12.5px; }
+  textarea { width: 100%; min-height: 74px; resize: vertical; }
+  .jadwal { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .jadwal input, .jadwal select { width: 100%; }
+  .jadwal .lebar { grid-column: 1 / -1; }
+  .riwayat { margin: 0; padding: 0; list-style: none; }
+  .riwayat li { position: relative; border-left: 2px solid #e7eaf2; padding: 0 0 12px 14px; font-size: 13px; }
+  .riwayat li::before { content: ''; position: absolute; left: -5px; top: 4px; width: 8px; height: 8px; border-radius: 999px; background: #6366f1; }
+  .riwayat li:last-child { padding-bottom: 0; }
+  .riwayat .w { font-size: 12px; color: #6b7280; }
+  details.ringkas summary { cursor: pointer; color: #4f46e5; font-size: 13px; font-weight: 600; }
+  details.ringkas .kv { margin-top: 12px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: #111827; color: #fff;
+    padding: 11px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 40;
+  }
+  .toast.show { opacity: 1; }
+  .toast.err { background: #b91c1c; }
+  .scrim { position: fixed; inset: 0; background: rgba(17, 24, 39, .3); opacity: 0; pointer-events: none; transition: opacity .18s; z-index: 15; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 380px; max-width: calc(100% - 32px); background: #fff; border-radius: 12px; padding: 20px; z-index: 45; display: none; }
+  .modal.open { display: block; }
+  .dialog-scrim { position: fixed; inset: 0; background: rgba(17, 24, 39, .38); opacity: 0; pointer-events: none; transition: opacity .18s; z-index: 40; }
+  .dialog-scrim.open { opacity: 1; pointer-events: auto; }
+  .dialog {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 680px;
+    max-width: calc(100% - 32px); max-height: calc(100vh - 48px); overflow: auto; background: #fff;
+    border-radius: 14px; padding: 16px 18px; z-index: 46; display: none; box-shadow: 0 18px 48px rgba(15, 23, 42, .24);
+  }
+  .dialog.open { display: block; }
+  .dialog .card { border: 0; padding: 0; box-shadow: none; background: none; }
+  .modal h4 { margin: 0 0 8px; font-size: 15px; }
+  .modal p { margin: 0 0 18px; font-size: 13px; color: #4b5563; }
+  .modal .aksi { display: flex; gap: 8px; justify-content: flex-end; }
+  .setup { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 22px 24px; max-width: 680px; }
+  .setup code { background: #f1f5f9; padding: 2px 6px; border-radius: 6px; font-size: 13px; }
+  /* Halaman masuk: menutupi seluruh aplikasi, jadi yang terlihat cuma kotak login. */
+  .layar-login { position: fixed; inset: 0; z-index: 60; background: #f4f6fb; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .kotak-login { width: 380px; max-width: 100%; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; box-shadow: 0 14px 40px rgba(15, 23, 42, .10); }
+  .kotak-login h2 { margin: 0 0 3px; font-size: 19px; }
+  .kotak-login p.atas { margin: 0 0 6px; font-size: 12.5px; color: #6b7280; }
+  .kotak-login label { display: block; font-size: 11.5px; font-weight: 600; color: #6b7280; margin: 12px 0 4px; }
+  .kotak-login input { width: 100%; }
+  .btn.luas { width: 100%; margin-top: 16px; }
+  .kotak-login .lupa { display: block; margin: 12px 0 0; padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 12px; color: #4f46e5; text-align: left; }
+  .kotak-login .lupa:hover { text-decoration: underline; }
+  .kotak-login .catatan { margin-top: 16px; font-size: 11.5px; color: #9ca3af; line-height: 1.45; }
+  .kotak-pesan { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; border-radius: 9px; padding: 8px 10px; font-size: 12px; margin-bottom: 6px; }
+  .kotak-pesan.sukses { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+  @media (max-width: 1000px) {
+    .app { flex-direction: column; }
+    .sidebar { width: 100%; flex: none; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .kolom-status, .dua, .tiga { grid-template-columns: 1fr; }
+    .panel { width: 100%; }
+    .sembil { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-mark"><svg class="ikon" viewBox="0 0 24 24"><path d="M4 13h7V4H4v9zM13 20h7v-9h-7v9zM4 20h7v-4H4v4zM13 8h7V4h-7v4z"/></svg></div>
+        <div class="logo-teks">
+          <h1>InternAdmin</h1>
+          <p>Pengelola Pendaftaran Magang</p>
+        </div>
+        <button type="button" id="btnSampit" title="Buka/tutup menu samping"><svg class="ikon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="nav" id="nav"></div>
+      <div class="side-foot" id="sideFoot"></div>
+    </aside>
+
+    <div class="konten">
+      <div class="page-head">
+        <div>
+          <h2 id="judulHalaman">Dashboard</h2>
+          <p id="subjudul">Memuat data...</p>
+        </div>
+        <div class="right">
+          <button class="btn subtle" type="button" id="btnMuat">Muat ulang</button>
+          <button class="btn ghost" type="button" id="btnEkspor" title="Mengunduh pendaftar brand yang sedang dibuka; kalau Data Pendaftar sedang memakai rentang tanggal, ekspor ikut rentang itu">Ekspor CSV brand ini</button>
+          <button class="btn subtle" type="button" id="btnKeluar" style="display:none" title="Keluar dari sesi ini; aplikasi kembali meminta username dan kata kunci">Keluar</button>
+        </div>
+      </div>
+      <div class="brand-tabs" id="brandTabs" style="display:none"></div>
+      <main>
+        <div id="setup" style="display:none"></div>
+        <div id="halaman"></div>
+      </main>
+    </div>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="panel" id="panel" aria-label="Detail pendaftar"></aside>
+  <div class="modal" id="modal">
+    <h4 id="modalJudul"></h4>
+    <p id="modalPesan"></p>
+    <div class="aksi">
+      <button class="btn subtle" type="button" id="modalBatal">Batal</button>
+      <button class="btn" type="button" id="modalYa">Ya, lanjutkan</button>
+    </div>
+  </div>
+  <div class="dialog-scrim" id="dialogScrim"></div>
+  <div class="dialog" id="dialogIntegrasi" role="dialog" aria-label="Form konfigurasi integrasi"></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var BRAND_AWAL = <?!= brandAwal ?>;
+    var STATE = {
+      bootstrap: null, overview: [], brand: null, page: 'dashboard', prefetch: null,
+      rows: [], rowsLoaded: false, rowsByBrand: {}, dashboardByBrand: {}, stats: {}, rowsArsip: false, dashboard: null, laporan: null, laporanCache: null, konfigurasi: null,
+      filter: { status: 'all', minat: '', kata: '', dari: '', sampai: '' },
+      sort: 'terbaru', halaman: 1, perHalaman: 12,
+      detail: null, busy: false, lingkup: 'semua', brandTab: 'list', yangDiseret: null, seretAkhir: 0,
+      integrasi: [], integrasiEdit: null, integrasiDraft: null,
+      integrasiSheets: null, integrasiSsId: '', integrasiSheetForm: '',
+      ambilTab: null,
+      brandDariUrl: '', renderSeq: 0, token: '',
+    };
+    try { STATE.token = sessionStorage.getItem('internadmin.token') || ''; } catch (e) { STATE.token = ''; }
+
+    var IKON = {
+      dashboard: '<path d="M4 13h7V4H4v9zM13 20h7v-9h-7v9zM4 20h7v-4H4v4zM13 8h7V4h-7v4z"/>',
+      daftar: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+      seleksi: '<path d="M4 5h5v14H4zM10 5h5v9h-5zM16 5h5v14h-5z"/>',
+      laporan: '<path d="M5 19V9m5 10V5m5 14v-7m5 7V8"/>',
+      brand: '<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>',
+      integrasi: '<path d="M4 4h16v6H4zM4 14h16v6H4z"/><path d="M8 7h.01M8 17h.01"/>',
+      pengaturan: '<path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 13a7 7 0 010-2l1.6-1.2-1.6-2.8-2 .8a7 7 0 01-1.4-1l-.3-2.2h-3.4l-.3 2.2a7 7 0 01-1.4 1l-2-.8L5 9.8 6.6 11a7 7 0 010 2L5 14.2l1.6 2.8 2-.8a7 7 0 011.4 1l.3 2.2h3.4l.3-2.2a7 7 0 011.4-1l2 .8 1.6-2.8z"/>',
+    };
+
+    var HALAMAN = [
+      { key: 'dashboard', grup: 'Pantau', judul: 'Dashboard', sub: 'Ringkasan semua brand dan aktivitas terakhir.' },
+      { key: 'brand', grup: 'Pantau', judul: 'Brand', sub: 'Pilih brand untuk membuka data pendaftar, seleksi, dan laporannya.' },
+      { key: 'integrasi', grup: 'Sistem', judul: 'Integrasi Spreadsheet', sub: 'Hubungkan Google Form dan spreadsheet jawaban tiap brand.' },
+      { key: 'pengaturan', grup: 'Sistem', judul: 'Pengaturan', sub: 'Sumber data tiap brand dan keterangan aplikasi.' },
+    ];
+
+    var TAB_BRAND = [
+      { key: 'dash', label: 'Dashboard' },
+      { key: 'daftar', label: 'Data Pendaftar' },
+      { key: 'seleksi', label: 'Seleksi' },
+      { key: 'laporan', label: 'Laporan & Statistik' },
+    ];
+
+    function halamanServing() {
+      if (STATE.page !== 'brand') return STATE.page;
+      if (STATE.brandTab === 'list' || STATE.brandTab === 'dash') return 'dashboard';
+      return STATE.brandTab;
+    }
+    function sedangDash() { return STATE.page === 'dashboard' || (STATE.page === 'brand' && STATE.brandTab === 'dash'); }
+    function sedangDaftar() { return STATE.page === 'brand' && STATE.brandTab === 'daftar'; }
+    function sedangSeleksi() { return STATE.page === 'brand' && STATE.brandTab === 'seleksi'; }
+    function sedangLaporan() { return STATE.page === 'brand' && STATE.brandTab === 'laporan'; }
+
+    function el(id) { return document.getElementById(id); }
+
+    // Supaya tidak jadi layar putih: error apa pun ditampilkan di layar.
+    window.onerror = function (pesanGalat, sumber, baris) {
+      tampilkanGalat('Error di halaman: ' + pesanGalat + (baris ? ' (baris ' + baris + ')' : ''));
+      return false;
+    };
+
+    function tampilkanGalat(teks) {
+      var box = el('setup');
+      box.style.display = 'block';
+      box.className = 'setup';
+      var galat = String(teks);
+      var dicek = /izin|permission|access|tidak memiliki/i.test(galat);
+      box.innerHTML = '<h3 style="margin-top:0">Halaman gagal dimuat</h3><p>' + esc(galat) + '</p>' +
+        '<div id="sebabGalat" class="sub">' + (dicek ? 'Memeriksa file mana yang boleh dibuka aplikasi...' : '') + '</div>' +
+        '<p class="sub">Screenshot pesan ini kalau minta tolong.</p>';
+      if (dicek) periksaKenapa();
+      var h = el('halaman');
+      if (h) h.innerHTML = '<div class="kosong">Halaman ini tidak terisi karena ada file yang tidak boleh dibuka aplikasi. ' +
+        'Daftar file mana saja yang macet + akun yang menjalankan ada di kotak di atas.</div>' +
+        '<div class="lebar" style="margin-top:10px"><button class="btn" type="button" id="galatKeIntegrasi">Buka Integrasi</button>' +
+        '<button class="btn subtle" type="button" id="galatKePengaturan" style="margin-left:8px">Buka Pengaturan</button></div>';
+      var ke = function (nama) {
+        return function () { STATE.page = nama; renderSidebar(); renderHalaman(); };
+      };
+      var bi = el('galatKeIntegrasi');
+      if (bi) bi.addEventListener('click', ke('integrasi'));
+      var bp = el('galatKePengaturan');
+      if (bp) bp.addEventListener('click', ke('pengaturan'));
+      var sub = el('subjudul');
+      if (sub) sub.textContent = 'Ada yang error, lihat kotak di bawah.';
+    }
+
+    // Kotak error harus bilang apa yang macet + satu langkah yang bisa dikerjakan,
+    // bukan cuma "tidak punya izin" seperti pesan bawaan Google.
+    function periksaKenapa() {
+      run('kenapaBelumBisa').then(function (h) {
+        var kotak = el('sebabGalat') || el('setup');
+        if (!kotak) return;
+        var bagian = (h.baris || []).map(function (b) {
+          var ditolak = String(b.isi).indexOf('DITOLAK:') === 0;
+          return '<div style="margin-top:5px"><strong>' + esc(b.label) + ':</strong> ' +
+            '<span style="color:' + (ditolak ? '#b91c1c' : '#374151') + '">' + esc(ditolak ? b.isi.slice(8) : b.isi) + '</span></div>';
+        });
+        (h.file || []).forEach(function (f) {
+          bagian.push('<div style="margin-top:5px"><strong>' + esc(f.label) + ':</strong> ' +
+            esc(f.bisa ? ('boleh dibuka — ' + f.nama) : 'TIDAK boleh dibuka') +
+            (f.bisa ? '' : '<div class="sub" style="margin-left:14px">' + esc(potong(f.alasan, 240)) + '</div>') + '</div>');
+        });
+        bagian.push('<div class="sub" style="margin-top:8px">Yang tertulis TIDAK boleh / DITOLAK belum boleh diakses aplikasi. ' +
+          'Cara paling gampang: buka file-nya di Drive → <strong>Bagikan</strong> → tambahkan akun di atas sebagai <strong>Editor</strong> → muat ulang halaman ini. ' +
+          'Kalau akun yang menjalankan bukan akun yang punya file kantor, keluar dulu dari akun ini lalu masuk dengan akun kantor.</div>');
+        kotak.innerHTML = '<div style="margin-top:8px;border-top:1px solid #e7eaf2;padding-top:6px">' + bagian.join('') + '</div>';
+      }).catch(function (e) {
+        var kotak = el('sebabGalat') || el('setup');
+        if (kotak) kotak.textContent = 'Pemeriksaan juga gagal: ' + String(e).slice(0, 160);
+      });
+    }
+
+    function render(nama, args) {
+      return run(nama, args).catch(function (e) { tampilkanGalat(String(e)); });
+    }
+
+    var FUNGSI_UBAH = ['updateStatus', 'tambahFollowUp', 'setJadwalWawancara', 'periksaDokumen', 'kirimSertifikat',
+      'isiDataContoh', 'hapusDataContoh', 'sambungkanBrand', 'hapusBrand', 'pakaiSatuSpreadsheet',
+      'buatFormBrand', 'buatDataContoh', 'ambilSemuaTab'];
+
+    function run(nama, args) {
+      return new Promise(function (resolve, reject) {
+        var runner = google.script.run
+          .withSuccessHandler(function (h) {
+            // Isi spreadsheet berubah, jadi rekap Laporan di cache tidak boleh dipakai lagi.
+            if (FUNGSI_UBAH.indexOf(nama) !== -1) STATE.laporanCache = null;
+            resolve(h);
+          })
+          .withFailureHandler(function (err) {
+            var sebab = err && err.message ? err.message : String(err);
+            if (String(sebab).indexOf('Sesi login') !== -1) {
+              STATE.loginTerbuka = false;
+              STATE.token = '';
+              try { sessionStorage.removeItem('internadmin.login'); sessionStorage.removeItem('internadmin.token'); } catch (e) { /* iframe kadang menolak sessionStorage */ }
+              renderHalaman();
+            }
+            reject(sebab);
+          });
+        runner.panggilan.apply(runner, [nama, STATE.token || '', args || []]);
+      });
+    }
+
+    function esc(s) {
+      return String(s === null || s === undefined ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function pesan(text, salah) {
+      var t = el('toast');
+      t.textContent = text;
+      t.className = 'toast show' + (salah ? ' err' : '');
+      clearTimeout(pesan._t);
+      pesan._t = setTimeout(function () { t.className = 'toast'; }, 3200);
+    }
+
+    function potong(teks, n) {
+      var s = String(teks || '');
+      return s.length > n ? s.slice(0, n - 1) + '...' : s;
+    }
+
+    function inisial(nama) {
+      return String(nama || '?').split(/\s+/).slice(0, 2).map(function (p) {
+        return p.charAt(0).toUpperCase();
+      }).join('');
+    }
+
+    function pilStatus(status) {
+      return '<span class="pill ' + status.replace(' ', '') + '">' + esc(status) + '</span>';
+    }
+
+    // ---------- persiapan awal ----------
+    // Menu + program yang sedang dibuka diingat, jadi refresh tidak balik ke Dashboard.
+    function bacaTampilan() {
+      var t = {};
+      try { t = JSON.parse(localStorage.getItem('tampilan') || '{}') || {}; } catch (e) { t = {}; }
+      if (HALAMAN.some(function (h) { return h.key === t.page; })) STATE.page = t.page;
+      else if (t.page === 'daftar' || t.page === 'seleksi' || t.page === 'laporan') {
+        // Menu lama sudah dilebur ke dalam Brand: pulihkan sebagai tab brand.
+        STATE.page = 'brand';
+        STATE.brandTab = t.page;
+      }
+      if (t.brandTab === 'list' || t.brandTab === 'dash' || t.brandTab === 'daftar' || t.brandTab === 'seleksi' || t.brandTab === 'laporan') STATE.brandTab = t.brandTab;
+      if (t.lingkup === 'semua' || t.lingkup === 'program') STATE.lingkup = t.lingkup;
+      if (typeof t.brand === 'string' && t.brand) STATE.brand = t.brand;
+      if (STATE.page === 'dashboard') STATE.lingkup = 'semua';
+      if (STATE.page === 'brand' && STATE.brandTab !== 'list' && STATE.lingkup !== 'program') STATE.brand = '';
+    }
+
+    function simpanTampilan() {
+      try {
+        localStorage.setItem('tampilan', JSON.stringify({
+          page: STATE.page, lingkup: STATE.lingkup, brand: STATE.brand, brandTab: STATE.brandTab,
+        }));
+      } catch (e) { /* penyimpanan penuh/diblok — bukan masalah besar */ }
+    }
+
+    // Tautan dashboard per brand (…/exec?brand=Nama) — dipakai kartu Integrasi.
+    function bacaBrandDariUrl() {
+      var ambil = function (b) { if (b) STATE.brandDariUrl = String(b); };
+      ambil(typeof BRAND_AWAL === 'string' ? BRAND_AWAL : '');
+      try { ambil(new URLSearchParams(location.search || '').get('brand')); } catch (e) { /* iframe tidak selalu membawa query */ }
+      try {
+        if (window.google && google.script && google.script.url && google.script.url.getLocation) {
+          google.script.url.getLocation(function (lok) {
+            ambil(lok && lok.parameter ? lok.parameter.brand : '');
+            if (STATE.brandDariUrl) terapkanBrandUrl();
+          });
+        }
+      } catch (e) { /* preview lokal: google.script.url memang tidak ada */ }
+    }
+
+    function terapkanBrandUrl() {
+      var b = STATE.brandDariUrl;
+      if (!b || !STATE.overview.some(function (o) { return o.brand === b; })) return;
+      STATE.brandDariUrl = '';
+      STATE.lingkup = 'program';
+      STATE.brand = b;
+      STATE.page = 'brand';
+      STATE.brandTab = 'dash';
+      STATE.halaman = 1;
+      lupaRows();
+      renderSidebar();
+      renderHalaman();
+    }
+
+    bacaTampilan();
+    bacaBrandDariUrl();
+
+    function init() {
+      return run('getInitData', [halamanServing(), STATE.brand]).then(function (d) {
+        if (!d || !d.bootstrap) { tampilkanGalat('Data awal tidak diterima dari server.'); return; }
+        STATE.bootstrap = d.bootstrap;
+        STATE.prefetch = d;
+        if (d.bootstrap.setupNeeded) return renderSetup();
+        STATE.overview = d.overview || [];
+        STATE.brand = d.brand || STATE.brand;
+        if (STATE.brandDariUrl && STATE.overview.some(function (o) { return o.brand === STATE.brandDariUrl; })) {
+          STATE.lingkup = 'program';
+          STATE.brand = STATE.brandDariUrl;
+          STATE.page = 'brand';
+          STATE.brandTab = 'dash';
+        }
+        if (d.rowsSemua) STATE.rowsByBrand = d.rowsSemua;
+        if (d.dashboardSemua) STATE.dashboardByBrand = d.dashboardSemua;
+        if (d.dashboardGabungan) STATE.dashboardGabungan = d.dashboardGabungan;
+        if (d.laporanPerBrand || d.laporanSemua) {
+          STATE.laporanCache = { semua: d.laporanSemua || null, perBrand: d.laporanPerBrand || {} };
+        }
+        else if (d.rowsData) STATE.rowsByBrand = {};
+        if (d.rowsData) {
+          STATE.rows = d.rowsData.rows;
+          STATE.stats = d.rowsData.stats;
+          STATE.rowsArsip = !!d.rowsData.arsip;
+          STATE.rowsLoaded = true;
+        }
+        renderSidebar();
+        var rusak = STATE.overview.length && STATE.overview.every(function (o) { return o.error; });
+        if (d.galat) return renderPerbaikan(d.galat);
+        if (rusak) return renderPerbaikan(STATE.overview[0].error);
+        return renderHalaman();
+      }).catch(function (e) { tampilkanGalat(String(e)); });
+    }
+
+    function renderPerbaikan(teks) {
+      el('setup').style.display = 'none';
+      el('halaman').innerHTML =
+        '<div class="setup"><h3 style="margin-top:0">Sumber data tidak bisa dibaca</h3>' +
+        '<p>' + esc(String(teks)) + '</p>' +
+        '<p class="sub">Kemungkinan spreadsheet lama sudah dihapus tapi masih tercatat di sini.</p>' +
+        '<button class="btn" type="button" id="pulihContoh">Pakai data contoh</button>' +
+        '<button class="btn subtle" type="button" id="pulihSetting" style="margin-left:8px">Buka Pengaturan</button></div>';
+
+      el('pulihContoh').addEventListener('click', function () {
+        el('pulihContoh').disabled = true;
+        el('pulihContoh').textContent = 'Membuat data contoh...';
+        run('buatDataContoh').then(function () { location.reload(); }).catch(function (e) {
+          el('pulihContoh').disabled = false;
+          el('pulihContoh').textContent = 'Pakai data contoh';
+          pesan(e, true);
+        });
+      });
+      el('pulihSetting').addEventListener('click', function () {
+        STATE.page = 'pengaturan';
+        renderSidebar();
+        renderHalaman();
+      });
+    }
+
+    function cocokBrand(nama) {
+      return STATE.overview.some(function (o) { return o.brand === nama; });
+    }
+
+    function brandPertama() {
+      return STATE.overview.length ? STATE.overview[0].brand : (STATE.bootstrap.brands[0] || '');
+    }
+
+    function renderSetup() {
+      el('halaman').innerHTML = '';
+      var box = el('setup');
+      box.style.display = 'block';
+      box.innerHTML =
+        '<h3 style="margin-top:0">Belum ada sumber data</h3>' +
+        '<p>Klik tombol ini sekali saja. Nanti dibuatkan spreadsheet berisi 3 brand contoh ' +
+        '(MagangJogja, FreelanceJogja, SkillUp Jogja) lengkap dengan pendaftarnya, lalu dashboard langsung terisi.</p>' +
+        '<button class="btn" type="button" id="buatContoh">Buat data contoh</button>' +
+        '<span class="sub" id="statusContoh" style="margin-left:12px"></span>' +
+        '<p class="sub" style="margin-top:18px">Sudah punya data form asli? Setelah ini buka menu Pengaturan untuk menyambungkan brand ' +
+        'ke spreadsheet jawaban Google Form. ID-nya ada di URL sheet, di antara <code>/d/</code> dan <code>/edit</code>.';
+
+      el('buatContoh').addEventListener('click', function () {
+        el('buatContoh').disabled = true;
+        el('statusContoh').textContent = 'Membuat spreadsheet contoh... sekitar 10 detik';
+        run('buatDataContoh').then(function (hasil) {
+          el('statusContoh').textContent = 'Beres: ' + (hasil.brands || []).length + ' brand dibuat, memuat ulang...';
+          setTimeout(function () { location.reload(); }, 900);
+        }).catch(function (e) {
+          el('buatContoh').disabled = false;
+          el('statusContoh').textContent = '';
+          pesan(e, true);
+        });
+      });
+    }
+
+    function renderSidebar() {
+      var ringkas = {};
+      STATE.overview.forEach(function (o) { ringkas[o.brand] = o; });
+      var totalBaru = STATE.overview.reduce(function (a, o) { return a + (o.baru || 0); }, 0);
+      var tombol = {
+        dashboard: totalBaru ? '<span class="n baru-badge">' + totalBaru + '</span>' : '',
+        brand: '<span class="n">' + (Object.keys(ringkas).length || (STATE.bootstrap && STATE.bootstrap.brands ? STATE.bootstrap.brands.length : 0)) + '</span>',
+      };
+      var grupSebelum = '';
+      el('nav').innerHTML = HALAMAN.map(function (h) {
+        var badge = tombol[h.key] || '';
+        var kepala = h.grup && h.grup !== grupSebelum ? '<div class="grup-label">' + esc(h.grup) + '</div>' : '';
+        grupSebelum = h.grup || '';
+        return kepala + '<button type="button" data-page="' + h.key + '" title="' + esc(h.judul) + '"' + (h.key === STATE.page ? ' class="active"' : '') + '>' +
+          '<svg class="ikon" viewBox="0 0 24 24">' + (IKON[h.key] || '') + '</svg>' +
+          '<span class="lbl">' + esc(h.judul) + '</span>' + badge + '</button>';
+      }).join('');
+      Array.prototype.forEach.call(el('nav').querySelectorAll('button'), function (b) {
+        b.addEventListener('click', function () {
+          STATE.page = b.getAttribute('data-page');
+          if (STATE.page === 'brand') STATE.brandTab = 'list';
+          STATE.halaman = 1;
+          renderSidebar();
+          renderHalaman();
+        });
+      });
+
+      var url = STATE.bootstrap ? STATE.bootstrap.spreadsheetUrl : '';
+      var akun = (STATE.bootstrap && STATE.bootstrap.emailAktif) || '';
+      var namaAkun = akun.split('@')[0] || STATE.brand || 'admin';
+      el('sideFoot').innerHTML =
+        '<span class="inisial">' + esc(inisial(namaAkun)) + '</span>' +
+        '<span class="f-teks"><strong>' + esc(namaAkun) + '</strong>' +
+        (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener">Buka spreadsheet data</a>' : '<span>admin</span>') +
+        (STATE.bootstrap && STATE.bootstrap.versi ? ' <span class="sub">v' + esc(STATE.bootstrap.versi) + '</span>' : '') +
+        '</span>';
+      simpanTampilan();
+    }
+
+    function loginTerbuka() {
+      try { return sessionStorage.getItem('internadmin.login') === '1' && !!sessionStorage.getItem('internadmin.token'); } catch (e) { return STATE.loginTerbuka === true; }
+    }
+    function tandaiLoginTerbuka() {
+      STATE.loginTerbuka = true;
+      try { sessionStorage.setItem('internadmin.login', '1'); } catch (e) { /* iframe kadang menolak sessionStorage */ }
+    }
+
+    function renderLogin(mode, jenisPesan, isiPesan, userTersisa) {
+      mode = mode || 'masuk';
+      var lama = el('layarLogin');
+      if (lama) lama.parentNode.removeChild(lama);
+      el('brandTabs').style.display = 'none';
+      el('brandTabs').innerHTML = '';
+      el('btnEkspor').style.display = 'none';
+      el('btnKeluar').style.display = 'none';
+      el('judulHalaman').textContent = 'Masuk';
+      el('subjudul').textContent = 'Masuk dulu untuk membuka dashboard.';
+
+      var pesan = isiPesan ? '<div class="kotak-pesan' + (jenisPesan === 'sukses' ? ' sukses' : '') + '">' + esc(isiPesan) + '</div>' : '';
+      var isi = mode === 'lupa'
+        ? '<h2>Kata kunci lupa?</h2><p class="atas">Isi kata kunci baru. Yang boleh melakukan ini hanya akun Google yang memasang login ini.</p>' +
+            '<label for="lgBaru1">Kata kunci baru</label><input id="lgBaru1" type="password" placeholder="Minimal 4 karakter" autocomplete="new-password">' +
+            '<label for="lgBaru2">Tulis ulang</label><input id="lgBaru2" type="password" placeholder="Sama persis" autocomplete="new-password">' +
+            '<button class="btn luas" type="button" id="lgSimpanBaru">Simpan kata kunci baru</button>' +
+            '<button class="lupa" type="button" id="lgKembali">Kembali ke halaman masuk</button>'
+        : '<h2>InternAdmin</h2><p class="atas">Masuk untuk membuka dashboard pendaftaran magang.</p>' +
+            '<label for="loginUser">Username</label><input id="loginUser" placeholder="Username" autocomplete="username" value="' + esc(userTersisa || '') + '">' +
+            '<label for="loginKey">Kata kunci</label><input id="loginKey" type="password" placeholder="Kata kunci" autocomplete="current-password">' +
+            '<button class="btn luas" type="button" id="loginMasuk">Masuk</button>' +
+            '<button class="lupa" type="button" id="loginLupa">Lupa kata kunci?</button>';
+
+      var layar = document.createElement('div');
+      layar.className = 'layar-login';
+      layar.id = 'layarLogin';
+      layar.innerHTML = '<div class="kotak-login">' + pesan + isi + '<div class="catatan">Layar ini bukan sekadar penghalang: tanpa login yang benar, seluruh data pendaftaran ditolak oleh server sampai sesinya aktif.<br>Versi aplikasi ini: <strong>' + esc((STATE.bootstrap && STATE.bootstrap.versi) || '?') + '</strong></div></div>';
+      document.body.appendChild(layar);
+
+      if (mode === 'lupa') {
+        el('lgSimpanBaru').addEventListener('click', function () {
+          var satu = el('lgBaru1').value, dua = el('lgBaru2').value;
+          if (!satu || satu.length < 4) { renderLogin('lupa', 'galat', 'Kata kunci baru minimal 4 karakter.'); return; }
+          if (satu !== dua) { renderLogin('lupa', 'galat', 'Tulis ulangnya tidak sama.'); return; }
+          el('lgSimpanBaru').disabled = true;
+          run('resetKataKunci', [satu]).then(function () {
+            renderLogin('masuk', 'sukses', 'Kata kunci baru tersimpan. Silakan masuk.');
+            return null;
+          }).catch(function (e) { el('lgSimpanBaru').disabled = false; renderLogin('lupa', 'galat', String(e.message || e)); });
+        });
+        el('lgKembali').addEventListener('click', function () { renderLogin('masuk', '', '', ''); });
+        el('lgBaru1').focus();
+        return;
+      }
+
+      var masuk = function () {
+        var tombol = el('loginMasuk'), user = el('loginUser').value;
+        if (STATE.sedangLogin) return;
+        STATE.sedangLogin = true;
+        tombol.disabled = true;
+        tombol.textContent = 'Memeriksa...';
+        run('login', [user, el('loginKey').value]).then(function (hasil) {
+          STATE.sedangLogin = false;
+          if (el('loginMasuk')) { el('loginMasuk').disabled = false; el('loginMasuk').textContent = 'Masuk'; }
+          if (hasil && hasil.ok) {
+            STATE.token = (hasil && hasil.token) || 'tanpa-kunci';
+            try { sessionStorage.setItem('internadmin.token', STATE.token); } catch (e) { /* iframe kadang menolak sessionStorage */ }
+            tandaiLoginTerbuka();
+            // Layar login ditutup dulu, datanya menyusul: membaca spreadsheet ribuan baris
+            // bisa puluhan detik, dan selama itu layarnya terasa mati padahal sedang jalan.
+            var kl = el('layarLogin');
+            if (kl && kl.parentNode) kl.parentNode.removeChild(kl);
+            renderKerangka();
+            init();
+          }
+          else renderLogin('masuk', 'galat', 'Username atau kata kunci salah.', user);
+        }).catch(function (e) {
+          STATE.sedangLogin = false;
+          renderLogin('masuk', 'galat', String(e.message || e), user);
+        });
+      };
+      el('loginMasuk').addEventListener('click', masuk);
+      el('loginKey').addEventListener('keydown', function (e) { if (e.key === 'Enter') masuk(); });
+      el('loginLupa').addEventListener('click', function () {
+        run('lupaKataKunci', []).then(function (cek) {
+          if (cek && cek.boleh) renderLogin('lupa', '', '', '');
+          else renderLogin('masuk', 'galat', (cek && cek.alasan) || 'Reset kata kunci tidak bisa dilakukan dari sini.');
+        }).catch(function (e) { renderLogin('masuk', 'galat', String(e.message || e)); });
+      });
+      (userTersisa ? el('loginKey') : el('loginUser')).focus();
+    }
+
+    function renderHalaman() {
+      if (!STATE.bootstrap) return renderKerangka();
+      // Naik tiap kali halaman berganti: hasil muat yang sudah kedaluwarsa tidak boleh
+      // menimpa layar (dulu bikin halaman salah muncul + "Data belum bisa dimuat").
+      STATE.renderSeq = (STATE.renderSeq || 0) + 1;
+      if (STATE.bootstrap.butuhLogin && !loginTerbuka()) return renderLogin();
+      var kotakLogin = el('layarLogin');
+      if (kotakLogin) kotakLogin.parentNode.removeChild(kotakLogin);
+      el('btnKeluar').style.display = '';
+      var h = HALAMAN.filter(function (x) { return x.key === STATE.page; })[0];
+      var tabs = el('brandTabs');
+      if (STATE.page === 'brand') {
+        if (STATE.brandTab === 'list') {
+          STATE.lingkup = 'semua';
+          el('judulHalaman').textContent = 'Brand';
+          el('subjudul').textContent = h.sub;
+          tabs.style.display = 'none';
+          tabs.innerHTML = '';
+          el('btnEkspor').style.display = 'none';
+          return tampilBrandList();
+        }
+        if (STATE.lingkup === 'program' && (!STATE.brand || !cocokBrand(STATE.brand))) STATE.lingkup = 'semua';
+        var tabAktif = TAB_BRAND.filter(function (t) { return t.key === STATE.brandTab; })[0] || TAB_BRAND[0];
+        el('judulHalaman').textContent = STATE.lingkup === 'program' ? STATE.brand : 'Semua brand';
+        el('subjudul').textContent = tabAktif.label;
+        el('btnEkspor').style.display = (STATE.brandTab === 'daftar' || STATE.brandTab === 'seleksi' || STATE.brandTab === 'laporan') ? '' : 'none';
+        renderTabBrand();
+        if (STATE.brandTab === 'daftar') return tampilDaftar();
+        if (STATE.brandTab === 'seleksi') return tampilSeleksi();
+        if (STATE.brandTab === 'laporan') return tampilLaporan();
+        return tampilDashboard();
+      }
+      tabs.style.display = 'none';
+      tabs.innerHTML = '';
+      el('judulHalaman').textContent = h.judul;
+      el('subjudul').textContent = h.sub;
+      el('btnEkspor').style.display = 'none';
+      if (STATE.page === 'dashboard') { STATE.lingkup = 'semua'; return tampilDashboard(); }
+      if (STATE.page === 'integrasi') return tampilIntegrasi();
+      return tampilPengaturan();
+    }
+
+    function renderTabBrand() {
+      var tabs = el('brandTabs');
+      tabs.style.display = 'flex';
+      tabs.innerHTML = '<button type="button" class="kembali" id="tabKembali">&larr; Semua brand</button>' +
+        TAB_BRAND.map(function (t) {
+          return '<button type="button" data-tab-brand="' + t.key + '"' + (t.key === STATE.brandTab ? ' class="on"' : '') + '>' + esc(t.label) + '</button>';
+        }).join('');
+      el('tabKembali').addEventListener('click', function () {
+        STATE.brandTab = 'list';
+        STATE.halaman = 1;
+        renderSidebar();
+        renderHalaman();
+      });
+      Array.prototype.forEach.call(tabs.querySelectorAll('[data-tab-brand]'), function (b) {
+        b.addEventListener('click', function () {
+          var key = b.getAttribute('data-tab-brand');
+          if (key === STATE.brandTab) return;
+          STATE.brandTab = key;
+          STATE.halaman = 1;
+          renderHalaman();
+        });
+      });
+    }
+
+    function tampilBrandList() {
+      var kotak = el('halaman');
+      if (!STATE.overview.length) {
+        kotak.innerHTML = '<div class="kosong">Belum ada brand. Tambahkan lewat menu Pengaturan.</div>';
+        return;
+      }
+      kotak.innerHTML = '<div class="brand-grid">' + STATE.overview.map(function (o) {
+        var status = o.error ? '<span class="sub" title="' + esc(o.error) + '">tidak bisa mengambil data di brand ini</span>'
+          : '<span class="sub">' + (o.total || 0) + ' pendaftar' + (o.baru ? ' &middot; ' + o.baru + ' baru' : '') + '</span>';
+        return '<div class="brand-kartu" data-brand-pilih="' + esc(o.brand) + '" role="button" tabindex="0">' +
+          '<span class="inisial">' + esc(inisial(o.brand)) + '</span>' +
+          '<span class="grow"><span class="nm">' + esc(o.brand) + '</span><br>' + status + '</span>' +
+          '<button type="button" class="buang" data-brand-hapus="' + esc(o.brand) + '" title="Hapus brand ini dari dashboard, kartu konfigurasinya ikut dibuang. Isi spreadsheet tidak tersentuh.">&times;</button></div>';
+      }).join('') + '</div>';
+      Array.prototype.forEach.call(kotak.querySelectorAll('[data-brand-pilih]'), function (b) {
+        b.addEventListener('click', function (e) {
+          if (e.target.closest('[data-brand-hapus]')) return;
+          pilihBrand(b.getAttribute('data-brand-pilih'));
+        });
+      });
+      Array.prototype.forEach.call(kotak.querySelectorAll('[data-brand-hapus]'), function (b) {
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          hapusBrandDariKartu(b);
+        });
+      });
+    }
+
+    // Hapus dari kartu brand: brand + kartunya di Integrasi, langsung hilang di layar,
+    // servernya disusul di belakang supaya klik terasa seketika.
+    function hapusBrandDariKartu(b) {
+      var merek = b.getAttribute('data-brand-hapus');
+      var kartu = ((STATE.konfigurasi || {}).integrasi || []).filter(function (r) { return r.Brand === merek; });
+      mintaKonfirmasi('Hapus brand "' + merek + '"?',
+        'Brand ini hilang dari daftar Brand dan sidebar' + (kartu.length ? ', beserta ' + kartu.length + ' kartu konfigurasinya di Integrasi (' + kartu.map(function (r) { return r['Nama Konfigurasi']; }).join(', ') + ')' : '') +
+        '. Yang TIDAK dihapus: isi spreadsheet, tab jawabannya, dan form aslinya — data pendaftar selalu aman.',
+        'Ya, hapus', function () {
+          b.disabled = true;
+          var kartuIds = {};
+          kartu.forEach(function (r) { kartuIds[r.ID] = true; });
+          // Daftar kartu boleh dipotong di layar HANYA kalau memang sudah pernah dimuat;
+          // kalau belum, biarkan kosong=null supaya halaman Integrasi mengambil segar,
+          // bukan menampilkan "belum ada konfigurasi" yang sebenarnya ada.
+          if (Array.isArray(STATE.integrasi) && STATE.integrasi.length) {
+            STATE.integrasi = STATE.integrasi.filter(function (r) { return !kartuIds[r.ID]; });
+            if (STATE.konfigurasi) STATE.konfigurasi.integrasi = STATE.integrasi;
+          } else {
+            STATE.konfigurasi = null;
+          }
+          STATE.overview = (STATE.overview || []).filter(function (o) { return o.brand !== merek; });
+          if (STATE.brand === merek) { STATE.brand = (STATE.overview[0] || {}).brand || ''; STATE.lingkup = 'semua'; }
+          renderSidebar();
+          renderHalaman();
+          pesan('Brand "' + merek + '" dihapus' + (kartu.length ? ' beserta ' + kartu.length + ' kartunya' : '') + '.');
+          run('hapusBrandLengkap', [merek]).then(function (h) {
+            STATE.konfigurasi = null;
+            if (h.gagal.length) pesan('Tapi ' + h.gagal.length + ' kartu gagal dibuang: ' + h.gagal.join(' | '), true);
+            lupaRows(merek);
+            return init();
+          }).catch(function (e) { STATE.konfigurasi = null; pesan(e, true); return init(); });
+        },
+        function (btn) { btn.disabled = false; });
+    }
+
+    function pilihBrand(nama) {
+      STATE.brand = nama;
+      STATE.lingkup = 'program';
+      STATE.brandTab = 'dash';
+      STATE.halaman = 1;
+      lupaRows();
+      STATE.filter = { status: 'all', minat: '', kata: '', dari: '', sampai: '' };
+      renderSidebar();
+      renderHalaman();
+    }
+
+    function lupaRows(merek) {
+      STATE.rows = [];
+      STATE.rowsLoaded = false;
+      // Cache gabungan juga dibuang, kalau tidak angka di layar tetap lama setelah isi/hapus contoh.
+      STATE.dashboardGabungan = null;
+      if (merek) {
+        delete STATE.rowsByBrand[merek];
+        delete STATE.dashboardByBrand[merek];
+      }
+    }
+
+    // Baris kecil yang menyebut tab mana yang sedang dibaca dashboard. Tombol data contoh sudah dihapus atas permintaan admin.
+    function petunjukTab() {
+      var info = STATE.overview.filter(function (o) { return o.brand === STATE.brand; })[0] || {};
+      var arsip = !!STATE.rowsArsip;
+      return '<div style="margin-top:12px"><div class="hint">Yang dibaca dashboard sekarang: tab <strong>' + esc(info.sheet || '(belum diketahui)') + '</strong> milik ' + esc(STATE.brand) + ' — ' + (info.total || 0) + ' baris' + (info.error ? ', error: ' + esc(info.error) : '') + '. Kalau itu tab lama/baru yang salah, sambungkan ulang lewat menu <strong>Integrasi Spreadsheet</strong>.</div>' +
+        '<div class="lebar" style="margin-top:8px"><button class="btn subtle kecil" type="button" id="btnArsip" title="Pakai ini untuk tab lama/tab induk yang statusnya ditandai warna, bukan tulisan — datanya tetap tampil dan ikut Laporan, tapi tidak dihitung sebagai pendaftar baru.">' +
+        (arsip ? 'Batalkan status arsip' : 'Tandai sebagai arsip') + '</button>' +
+        '<span class="sub" id="statusArsip" style="margin-left:10px">' +
+        (arsip ? 'Brand ini arsip: ' + (info.total || 0) + ' orang tetap tampil, tapi tidak dihitung sebagai pendaftar baru.' : 'Belum diarsipkan — semua yang belum ada keputusan dihitung sebagai pendaftar baru.') +
+        '</span></div></div>';
+    }
+
+    function pastikanRows() {
+      if (STATE.rowsLoaded) return Promise.resolve(STATE.rows);
+      if (pakaiRows(STATE.brand)) return Promise.resolve(STATE.rows);
+      return jalankanRows();
+    }
+
+    // Data program lain sudah ikut terkirim saat muat pertama, jadi pindah program tidak perlu menunggu server.
+    function pakaiRows(nama) {
+      var data = STATE.rowsByBrand[nama];
+      if (!data) return false;
+      STATE.rows = data.rows;
+      STATE.stats = data.stats;
+      STATE.rowsLoaded = true;
+      return true;
+    }
+
+    function jalankanRows() {
+      return run('getBrandData', [STATE.brand]).then(function (data) {
+        STATE.rowsByBrand[STATE.brand] = data;
+        STATE.rows = data.rows;
+        STATE.stats = data.stats;
+        STATE.rowsLoaded = true;
+        return data.rows;
+      });
+    }
+
+    // Setiap perubahan data harus mengubah SEMUA angka: baris tabel, badge sidebar, tile & kartu Dashboard,
+    // rekap semua brand, dan Laporan. Tanpa ini, kartu yang barusan dipindah tetap bilang angka lama.
+    function segarkan(merek) {
+      var tugas = [jalankanRows(), run('getOverview')];
+      var perluDashboard = merek && STATE.dashboardByBrand && STATE.dashboardByBrand[merek];
+      if (perluDashboard) tugas.push(run('getDashboard', [merek]));
+      STATE.laporanCache = null;
+      return Promise.all(tugas).then(function (res) {
+        STATE.overview = res[1] || [];
+        if (perluDashboard) STATE.dashboardByBrand[merek] = res[2];
+        renderSidebar();
+      });
+    }
+
+    // ---------- 1. Dashboard ----------
+    function tampilDashboard() {
+      var seq = STATE.renderSeq;
+      el('setup').style.display = 'none';
+      // Menu Dashboard = gabungan SEMUA brand, dan perhitungannya dikerjakan server.
+      // Kalau digabung di browser, brand besar ikut terkirim semuanya dan itu yang bikin lama.
+      if (STATE.page === 'dashboard') {
+        if (STATE.dashboardGabungan) { renderDashboard(STATE.dashboardGabungan); return Promise.resolve(); }
+        el('halaman').innerHTML = '<div class="kosong">Memuat gabungan semua brand...</div>';
+        return run('getDashboard', ['']).then(function (h) {
+          if (seq !== STATE.renderSeq) return;
+          STATE.dashboardGabungan = h;
+          renderDashboard(h);
+        }).catch(galatHalaman);
+      }
+      if (semuaTersedia()) { renderDashboard(gabungDashboard()); STATE.prefetch = null; return Promise.resolve(); }
+      var d = STATE.dashboardByBrand[STATE.brand] || (STATE.prefetch && STATE.prefetch.dashboard ? STATE.prefetch.dashboard : null);
+      STATE.prefetch = null;
+      if (d) { renderDashboard(d); return Promise.resolve(); }
+      el('halaman').innerHTML = '<div class="kosong">Memuat...</div>';
+      return run('getDashboard', [STATE.brand]).then(function (h) { if (seq === STATE.renderSeq) renderDashboard(h); }).catch(galatHalaman);
+    }
+
+    // Rekap semua brand di satu tabel, supaya tidak perlu klik satu-satu buat lihat gambaran besar.
+    function rekapSemuaProgram() {
+      var daftar = Object.keys(STATE.dashboardByBrand);
+      if (daftar.length < 2) return '';
+      var baris = daftar.map(function (nama) {
+        var st = STATE.dashboardByBrand[nama].stats || {};
+        var gugur = (st.Ditolak || 0) + (st.Dikeluarkan || 0);
+        var dibuka = STATE.lingkup === 'program' && nama === STATE.brand;
+        return '<tr data-pilih-program="' + esc(nama) + '"' + (dibuka ? ' class="selected"' : '') + '>' +
+          '<td class="nama">' + esc(nama) + '</td>' +
+          '<td>' + (st.total || 0) + '</td><td>' + (st.baru || 0) + '</td><td>' + (st.Diterima || 0) + '</td>' +
+          '<td>' + (st.Lulus || 0) + '</td><td>' + gugur + '</td>' +
+          '<td>' + (dibuka ? '<span class="pill hijau">sedang dibuka</span>' : '<span class="sub">klik untuk buka</span>') + '</td></tr>';
+      }).join('');
+      return '<div class="card" style="margin-top:14px"><h3>Rekap semua brand</h3>' +
+        '<div class="hint">Klik salah satu baris untuk memindahkan dashboard ke brand itu.</div>' +
+        '<div style="overflow-x:auto"><table><thead><tr><th>Brand</th><th>Total</th><th>Baru</th><th>Diterima</th><th>Lulus</th><th>Ditolak / DO</th><th></th></tr></thead><tbody>' +
+        baris + '</tbody></table></div></div>';
+    }
+
+    function keDaftarDengan(f) {
+      STATE.filter = { status: 'all', minat: '', kata: '', dari: '', sampai: '' };
+      Object.keys(f).forEach(function (k) { STATE.filter[k] = f[k]; });
+      STATE.page = 'brand';
+      STATE.brandTab = 'daftar';
+      STATE.halaman = 1;
+      renderSidebar();
+      renderHalaman();
+    }
+
+    // Kartu "Belum di-follow up" hanya untuk yang belum diputus (Seleksi), sama seperti angkanya di kartu.
+    var STATUS_PROSES = ['Seleksi', 'Diterima'];
+    var STATUS_WAWANCARA = ['Seleksi'];
+    function sudahJadwalAktif(r) {
+      return !!r.jadwal && STATUS_WAWANCARA.indexOf(r.status) !== -1;
+    }
+
+    // Berkas yang belum lengkap cuma dihitung selama orangnya masih diproses;
+    // yang sudah Lulus, Ditolak, atau Dikeluarkan tidak dikejar lagi.
+    function berkasKurang(r) {
+      return STATUS_PROSES.indexOf(r.status) !== -1 && !!(r.berkas && r.berkas.total && r.berkas.ada < r.berkas.total);
+    }
+    // Yang sudah Diterima tidak dikejar follow-up lagi: magangnya jalan, kontak sudah urusan lain.
+    function belumDifollow(r) {
+      return STATUS_WAWANCARA.indexOf(r.status) !== -1 && !r.jumlahFollowUp;
+    }
+
+    function saringCepat_(f) {
+      return rowsLingkup().filter(function (r) {
+        var k = f.status;
+        if (k === 'baru') return !!r.baru;
+        if (k === 'gugur') return r.status === 'Ditolak' || r.status === 'Dikeluarkan';
+        if (k === 'belum-followup') return belumDifollow(r);
+        if (k === 'berkas-kurang') return berkasKurang(r);
+        if (k === 'dijadwalkan') return sudahJadwalAktif(r);
+        if (k && k !== 'all' && r.status !== k) return false;
+        if (f.minat && r.minat !== f.minat) return false;
+        return true;
+      });
+    }
+
+    // Klik angka di Dashboard membuka daftarnya di tempat, tidak pindah menu.
+    function tampilkanDiDashboard(judul, f, dariServer) {
+      var kotak = el('hasilDashboard');
+      var rows = dariServer ? (dariServer.rows || []) : saringCepat_(f);
+      var jumlah = dariServer ? dariServer.jumlah : rows.length;
+      var shown = rows.slice(0, 12);
+      kotak.innerHTML =
+        '<div class="card" style="margin-top:12px">' +
+          '<div class="kepala-sasaran"><h3>' + esc(judul) + ' <span class="count">' + jumlah + '</span></h3>' +
+          '<span><button class="btn ghost kecil" type="button" data-buka>Kerja di Data Pendaftar</button> ' +
+          '<button class="btn subtle kecil" type="button" data-tutup>Tutup</button></span></div>' +
+          (rows.length
+            ? '<div class="baris-list">' + shown.map(function (r) {
+                var gabungan = !!(STATE.dashboard && STATE.dashboard.gabungan);
+                var asal = gabungan && r.brand ? ' &middot; ' + esc(r.brand) : '';
+                return '<div class="isi bisa" data-row="' + r.row + '" data-brand="' + esc(r.brand || STATE.brand) + '"><div class="avatar">' + esc(inisial(r.nama)) + '</div>' +
+                  '<div class="grow"><div class="nama">' + esc(r.nama) + (r.baru ? '<span class="tag-baru">baru</span>' : '') + '</div>' +
+                  '<div class="sub">' + esc(potong(r.minat, 46) || '-') + asal + ' &middot; ' + esc(r.timestamp) + '</div></div>' +
+                  pilStatus(r.status) + '</div>';
+              }).join('') +
+              (jumlah > shown.length ? '<div class="hint" style="margin-top:8px">Menampilkan 12 terbaru dari ' + jumlah + ' orang.</div>' : '') +
+              '</div>'
+            : '<div class="kosong">Tidak ada yang cocok di ' + ((STATE.dashboard && STATE.dashboard.gabungan) ? 'brand mana pun.' : 'brand ini.') + '</div>') +
+        '</div>';
+      Array.prototype.forEach.call(kotak.querySelectorAll('[data-row]'), function (b) {
+        b.addEventListener('click', function () { bukaDetail(Number(b.getAttribute('data-row')), b.getAttribute('data-brand')); });
+      });
+      kotak.querySelector('[data-tutup]').addEventListener('click', function () { kotak.innerHTML = ''; });
+      kotak.querySelector('[data-buka]').addEventListener('click', function () { keDaftarDengan(f); });
+      kotak.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function semuaTersedia() {
+      return STATE.lingkup === 'semua' && Object.keys(STATE.dashboardByBrand).length > 1;
+    }
+
+    // Baris yang lagi dilihat: gabungan semua brand, atau satu brand saja.
+    function rowsLingkup() {
+      if (!semuaTersedia()) return STATE.rows;
+      var out = [];
+      Object.keys(STATE.rowsByBrand).forEach(function (m) {
+        (STATE.rowsByBrand[m].rows || []).forEach(function (r) { out.push(r); });
+      });
+      return out;
+    }
+
+    function petaKeItem(peta) {
+      return Object.keys(peta).map(function (k) { return { label: k, nilai: peta[k] }; })
+        .sort(function (a, b) { return b.nilai - a.nilai; });
+    }
+
+    function gabungDashboard() {
+      var stats = { total: 0, baru: 0 };
+      var minat = {}, kampus = {}, perlu = 0, berkas = 0, jadwal = 0;
+      Object.keys(STATE.dashboardByBrand).forEach(function (m) {
+        var d = STATE.dashboardByBrand[m];
+        Object.keys(d.stats || {}).forEach(function (k) { stats[k] = (stats[k] || 0) + d.stats[k]; });
+        perlu += d.perluTindakLanjut || 0;
+        berkas += d.berkasBelumLengkap || 0;
+        jadwal += d.sudahDijadwalkan || 0;
+        (d.chartMinat || []).forEach(function (i) { minat[i.label] = (minat[i.label] || 0) + i.nilai; });
+        (d.chartKampus || []).forEach(function (i) { kampus[i.label] = (kampus[i.label] || 0) + i.nilai; });
+      });
+      var trenPeta = {};
+      Object.keys(STATE.dashboardByBrand).forEach(function (m) {
+        (STATE.dashboardByBrand[m].trend || []).forEach(function (t) { trenPeta[t.label] = (trenPeta[t.label] || 0) + t.nilai; });
+      });
+      var tren = Object.keys(trenPeta).sort(function (a, b) {
+        var ja = a.split('/'), jb = b.split('/');
+        return (+ja[1] - +jb[1]) || (+ja[0] - +jb[0]);
+      }).map(function (k) { return { label: k, nilai: trenPeta[k] }; });
+      // Sama seperti server: kartu ini khusus yang belum ada keputusan (Seleksi).
+      var terbaru = rowsLingkup().filter(function (r) { return r.status === 'Seleksi'; })
+        .sort(function (a, b) { return (b.iso || '') < (a.iso || '') ? -1 : 1; }).slice(0, 5);
+      return {
+        stats: stats, trend: tren,
+        chartMinat: petaKeItem(minat), chartKampus: petaKeItem(kampus),
+        perluTindakLanjut: perlu, berkasBelumLengkap: berkas, sudahDijadwalkan: jadwal,
+        jumlahBrand: Object.keys(STATE.dashboardByBrand).length,
+        terbaru: terbaru, gabungan: true,
+      };
+    }
+
+    function renderDashboard(d) {
+        STATE.dashboard = d;
+        var s = d.stats;
+        var tiles = [
+          { k: 'all', n: s.total, l: 'Total pendaftar' },
+          { k: 'baru', n: s.baru, l: 'Pendaftar baru' },
+          { k: 'Diterima', n: s.Diterima, l: 'Diterima' },
+          { k: 'Lulus', n: s.Lulus, l: 'Lulus' },
+          { k: 'gugur', n: (s.Ditolak || 0) + (s.Dikeluarkan || 0), l: 'Ditolak / dikeluarkan' },
+        ];
+        el('halaman').innerHTML =
+          '<div class="sasaran">' + (d.gabungan
+            ? 'Angka di bawah ini <strong>gabungan semua brand</strong> (' + (d.jumlahBrand || Object.keys(STATE.dashboardByBrand).length) + ' brand). Klik nama brand di kiri untuk melihat satu per satu.'
+            : 'Angka di bawah ini khusus brand <strong>' + esc(STATE.brand) + '</strong>. Ganti brand lewat tombol Semua brand di atas.') + '</div>' +
+          '<div class="grid tiles">' + tiles.map(function (t) {
+            return '<button class="tile" type="button" data-k="' + esc(t.k) + '"><div class="num">' + (t.n || 0) + '</div><div class="lbl">' + esc(t.l) + '</div></button>';
+          }).join('') + '</div>' +
+          '<div class="grid tiga" style="margin-top:14px">' +
+            kartuAngka('Belum di-follow up', d.perluTindakLanjut, 'masih menunggu keputusan dan belum ada catatan kontak sama sekali', 'belum-followup') +
+            kartuAngka('Berkas belum lengkap', d.berkasBelumLengkap, 'yang masih diproses dan tautan CV/portofolionya kurang', 'berkas-kurang') +
+            kartuAngka('Sudah dijadwalkan', d.sudahDijadwalkan, 'wawancaranya masih akan datang', 'dijadwalkan') +
+          '</div>' +
+          '<div id="hasilDashboard"></div>' +
+          rekapSemuaProgram() +
+          '<div class="grid dua" style="margin-top:14px">' +
+            '<div class="card"><h3>Tren pendaftaran</h3><div class="hint">Jumlah pendaftar per minggu, ' + d.trend.length + ' minggu terakhir.</div>' + kolomHtml(d.trend, false, TINGGI_BAGAN_TREN) + '</div>' +
+            '<div class="card"><h3>Bidang yang diminati</h3><div class="hint">Klik salah satu untuk menyaring daftar.</div>' + barsHtml(d.chartMinat.slice(0, MAKS_BIDANG)) + (d.chartMinat.length > MAKS_BIDANG ? '<div class="sub" style="margin-top:8px">+' + (d.chartMinat.length - MAKS_BIDANG) + ' bidang lainnya tidak ditampilkan di sini — pilih lewat kotak "Semua bidang" di Data Pendaftar, atau lihat menu Laporan.</div>' : '') + '</div>' +
+          '</div>' +
+          '<div class="card" style="margin-top:14px"><h3>Pendaftar terbaru</h3>' +
+            (d.terbaru.length ? '<div class="baris-list">' + d.terbaru.map(function (r) {
+              var asal = d.gabungan && r.brand ? ' &middot; ' + esc(r.brand) : '';
+              return '<div class="isi bisa" data-row="' + r.row + '" data-brand="' + esc(r.brand || STATE.brand) + '"><div class="avatar">' + esc(inisial(r.nama)) + '</div>' +
+                '<div class="grow"><div class="nama">' + esc(r.nama) + (r.baru ? '<span class="tag-baru">baru</span>' : '') + '</div>' +
+                '<div class="sub">' + esc(potong(r.minat, 46) || '-') + asal + ' &middot; ' + esc(r.timestamp) + '</div></div>' +
+                pilStatus(r.status) +
+                '<button class="btn ghost kecil" type="button">Detail</button></div>';
+            }).join('') + '</div>' : '<div class="kosong">' + (d.gabungan ? 'Belum ada pendaftar di brand mana pun.' : 'Belum ada pendaftar di brand ini.') + ' Sheet-nya masih kosong — isi form-nya sekali, atau jalankan Pengaturan &rarr; Cek sistem.' + petunjukTab() + '</div>') +
+            '<div style="margin-top:10px"><button class="btn subtle" type="button" id="semua">Lihat semua pendaftar</button></div>' +
+          '</div>';
+
+        var permintaanTerakhir = '';
+        function pasang(el_, judul, filter) {
+          // Klik angka bisa terjadi tepat setelah ganti brand, saat rows masih dibersihkan (lupaRows),
+          // jadi baris harus dijamin ada dulu sebelum difilter — kalau tidak, kartunya 18 tapi daftarnya 0.
+          // Penjaganya cuma "masih di Dashboard & merek yang sama": renderSeq tidak dipakai di sini karena
+          // prefetch latar belakang menaikkannya, dan di server asli jeda itu sampai beberapa detik
+          // sehingga hasilnya kebuang diam-diam (kartu kelihatannya tidak bisa dipencet).
+          el_.addEventListener('click', function () {
+            var merekAktif = STATE.brand;
+            // Dashboard gabungan mencari di semua brand, jadi brand-nya sengaja dikosongkan
+            // dan server yang menyaring — bukan daftar brand aktif yang ada di browser.
+            var merekSasaran = d.gabungan ? '' : STATE.brand;
+            // Klik kartu lain harus menang: tanpa ini, hasil kartu yang diklik duluan bisa
+            // datang belakangan dan daftarnya jadi punya kartu lain.
+            permintaanTerakhir = judul;
+            if (!d.gabungan && STATE.rowsLoaded && STATE.rows.length <= 1500) {
+              pastikanRows().then(function () {
+                if (!sedangDash() || STATE.brand !== merekAktif || permintaanTerakhir !== judul || !el('hasilDashboard')) return;
+                tampilkanDiDashboard(judul, filter);
+              }).catch(galatHalaman);
+              return;
+            }
+            // Brand besar (tab induk 5.516 baris): server yang menyaring dan hanya mengirim
+            // 12 nama terbaru. Menunggu semua baris masuk browser itulah yang bikin kartunya
+            // kelihatan tidak bisa dipencet.
+            var kotak = el('hasilDashboard');
+            if (!kotak) return;
+            kotak.innerHTML = '<div class="card" style="margin-top:12px"><div class="kosong">Menghitung ' + esc(judul) + '...</div></div>';
+            run('sasaranBaris', [{
+              brand: merekSasaran, status: filter.status || 'all', minat: filter.minat || '', kata: filter.kata || '', batas: 12,
+            }]).then(function (h) {
+              if (!sedangDash() || STATE.brand !== merekAktif || permintaanTerakhir !== judul || !el('hasilDashboard')) return;
+              tampilkanDiDashboard(judul, filter, h);
+            }).catch(function (e) {
+              if (permintaanTerakhir !== judul) return;
+              if (el('hasilDashboard')) el('hasilDashboard').innerHTML = '';
+              pesan(e, true);
+            });
+          });
+        }
+        Array.prototype.forEach.call(el('halaman').querySelectorAll('.tile'), function (b) {
+          pasang(b, b.querySelector('.lbl').textContent.trim(), { status: b.getAttribute('data-k') });
+        });
+        Array.prototype.forEach.call(el('halaman').querySelectorAll('[data-row]'), function (b) {
+          b.addEventListener('click', function () { bukaDetail(Number(b.getAttribute('data-row')), b.getAttribute('data-brand')); });
+        });
+        Array.prototype.forEach.call(el('halaman').querySelectorAll('[data-saring]'), function (b) {
+          pasang(b, b.querySelector('h3').textContent.trim(), { status: b.getAttribute('data-saring') });
+        });
+        Array.prototype.forEach.call(el('halaman').querySelectorAll('[data-minat]'), function (b) {
+          pasang(b, 'Bidang ' + b.getAttribute('data-minat'), { minat: b.getAttribute('data-minat') });
+        });
+        Array.prototype.forEach.call(el('halaman').querySelectorAll('[data-pilih-program]'), function (tr) {
+          tr.addEventListener('click', function () {
+            var nama = tr.getAttribute('data-pilih-program');
+            if (STATE.lingkup === 'program' && nama === STATE.brand && STATE.page === 'brand' && STATE.brandTab === 'dash') return;
+            STATE.lingkup = 'program';
+            STATE.brand = nama;
+            STATE.page = 'brand';
+            STATE.brandTab = 'dash';
+            lupaRows();
+            STATE.filter = { status: 'all', minat: '', kata: '', dari: '', sampai: '' };
+            STATE.halaman = 1;
+            renderSidebar();
+            renderHalaman();
+          });
+        });
+        el('semua').addEventListener('click', function () {
+          STATE.filter.status = 'all';
+          STATE.page = 'brand';
+          STATE.brandTab = 'daftar';
+          renderSidebar();
+          renderHalaman();
+        });
+    }
+
+    function kartuAngka(judul, angka, ket, saring) {
+      var ketTampil = saring ? ket + ' — klik untuk melihat daftarnya' : ket;
+      return '<button type="button" class="card klik"' + (saring ? ' data-saring="' + esc(saring) + '"' : ' disabled') + '>' +
+        '<h3>' + esc(judul) + '</h3><div class="num" style="font-size:26px;font-weight:700">' + (angka || 0) + '</div>' +
+        '<div class="sub">' + esc(ketTampil) + '</div></button>';
+    }
+
+    // Diagram batang tegak: semua batang berdiri di garis dasar yang sama, angka di atas, label di bawah.
+    var TINGGI_BAGAN = 132; // piksel, sama di semua diagram supaya tingginya sebanding
+    var TINGGI_BAGAN_KECIL = 74;
+    var TINGGI_BAGAN_TREN = 280; // kartu Tren dibuat mendekati tinggi kartu bidang di sebelahnya
+    var MAKS_BIDANG = 8; // sisanya ditulis sebagai catatan, datanya tetap ada di filter dan Laporan
+    function kolomHtml(items, kecil, tinggi) {
+      if (!items.length) return '<div class="kosong">Belum ada data.</div>';
+      var ruang = tinggi || (kecil ? TINGGI_BAGAN_KECIL : TINGGI_BAGAN);
+      var gaya = tinggi ? ' style="height:' + tinggi + 'px"' : '';
+      var maks = Math.max.apply(null, items.map(function (i) { return i.nilai; }).concat([1]));
+      var umum = ['universitas', 'politeknik', 'sekolah', 'institut', 'stichting', 'amikoa', 'akademi', 'program', 'magang'];
+      return '<div class="bagan' + (kecil ? ' cilik' : '') + '">' + items.map(function (i) {
+        var tinggi = Math.max(Math.round((i.nilai / maks) * ruang), 3);
+        var kata = String(i.label).split(' ');
+        while (kata.length > 1 && umum.indexOf(kata[0].toLowerCase()) !== -1) kata.shift();
+        var cap = kata.slice(0, 2).join(' ');
+        return '<div class="k" title="' + esc(i.label) + ' · ' + i.nilai + ' orang">' +
+          '<div class="tiang"' + gaya + '><span class="nilai">' + i.nilai + '</span>' +
+          '<div class="batang" style="height:' + tinggi + 'px"></div></div>' +
+          '<div class="cap">' + esc(cap) + '</div></div>';
+      }).join('') + '</div>';
+    }
+
+    function barsHtml(items) {
+      if (!items.length) return '<div class="kosong">Belum ada data.</div>';
+      var maks = Math.max.apply(null, items.map(function (i) { return i.nilai; }));
+      var total = items.reduce(function (a, i) { return a + i.nilai; }, 0) || 1;
+      return '<div class="bars">' + items.map(function (i) {
+        var persen = Math.round((i.nilai / total) * 100);
+        return '<div class="row bisa" data-minat="' + esc(i.label) + '"><div class="lab"><span>' + esc(potong(i.label, 42)) + '</span>' +
+          '<span class="angka">' + i.nilai + ' <small>· ' + persen + '%</small></span></div>' +
+          '<div class="track"><div class="fill" style="width:' + Math.max(Math.round((i.nilai / maks) * 100), 4) + '%"></div></div></div>';
+      }).join('') + '</div>';
+    }
+
+    // ---------- 2. Data Pendaftar ----------
+    function tampilDaftar() {
+      var seq = STATE.renderSeq;
+      return pastikanRows().then(function () {
+        if (seq !== STATE.renderSeq) return;
+        var minat = {};
+        // Sumbernya baris yang SEDANG DILIHAT (gabungan semua brand kalau lingkupnya "semua"),
+        // bukan STATE.rows yang cuma berisi satu merek — kalau tidak, banyak bidang tidak muncul di pilihan.
+        rowsLingkup().forEach(function (r) { if (r.minat) minat[r.minat] = 1; });
+        el('halaman').innerHTML =
+          '<div class="card">' +
+            '<div class="filter">' +
+              '<input type="search" id="cari" placeholder="Cari nama, email, kampus, atau bidang" value="' + esc(STATE.filter.kata) + '">' +
+              '<select id="fStatus">' + ['all', 'baru', 'belum-followup', 'berkas-kurang', 'dijadwalkan'].concat(STATE.bootstrap.statusList || []).map(function (s) {
+                var lbl = { all: 'Semua status', baru: 'Pendaftar baru', 'belum-followup': 'Belum di-follow up', 'berkas-kurang': 'Berkas belum lengkap', 'dijadwalkan': 'Sudah dijadwalkan' }[s] || s;
+                return '<option value="' + esc(s) + '"' + (STATE.filter.status === s ? ' selected' : '') + '>' + esc(lbl) + '</option>';
+              }).join('') + '</select>' +
+              '<select id="fMinat"><option value="">Semua bidang</option>' + Object.keys(minat).sort().map(function (m) {
+                return '<option value="' + esc(m) + '"' + (STATE.filter.minat === m ? ' selected' : '') + '>' + esc(potong(m, 28)) + '</option>';
+              }).join('') + '</select>' +
+              '<input type="date" id="fDari" value="' + esc(STATE.filter.dari) + '" title="Dari tanggal">' +
+              '<input type="date" id="fSampai" value="' + esc(STATE.filter.sampai) + '" title="Sampai tanggal">' +
+              '<select id="fSort">' + [['terbaru', 'Urut: terbaru daftar'], ['terlama', 'Urut: terlama daftar'], ['nama', 'Urut: nama A-Z']].map(function (o) {
+                return '<option value="' + o[0] + '"' + (STATE.sort === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+              }).join('') + '</select>' +
+              '<select id="fUkuran">' + [12, 25, 50].map(function (n) {
+                return '<option value="' + n + '"' + (STATE.perHalaman === n ? ' selected' : '') + '>' + n + ' baris per halaman</option>';
+              }).join('') + '</select>' +
+            '</div>' +
+            petunjukTab() +
+            '<div id="tabelDaftar"></div>' +
+          '</div>';
+
+        el('cari').addEventListener('input', function () { STATE.filter.kata = this.value.trim(); STATE.halaman = 1; renderTabelDaftar(); });
+        el('fStatus').addEventListener('change', function () { STATE.filter.status = this.value; STATE.halaman = 1; renderTabelDaftar(); });
+        el('fMinat').addEventListener('change', function () { STATE.filter.minat = this.value; STATE.halaman = 1; renderTabelDaftar(); });
+        el('fDari').addEventListener('change', function () { STATE.filter.dari = this.value; STATE.halaman = 1; renderTabelDaftar(); });
+        el('fSampai').addEventListener('change', function () { STATE.filter.sampai = this.value; STATE.halaman = 1; renderTabelDaftar(); });
+        el('fSort').addEventListener('change', function () { STATE.sort = this.value; STATE.halaman = 1; renderTabelDaftar(); });
+        el('fUkuran').addEventListener('change', function () { STATE.perHalaman = Number(this.value); STATE.halaman = 1; renderTabelDaftar(); });
+        if (el('btnArsip')) el('btnArsip').addEventListener('click', function () {
+          var b = el('btnArsip');
+          if (b.disabled) return;
+          b.disabled = true;
+          var mau = !STATE.rowsArsip;
+          run('setelArsip', [STATE.brand, mau]).then(function () {
+            STATE.rowsArsip = mau;
+            pesan(mau ? 'Ditandai arsip — pendaftarnya tidak dihitung sebagai "baru" lagi.' : 'Status arsip dilepas, dihitung lagi.');
+            lupaRows();
+            return init();
+          }).catch(function (e) { b.disabled = false; pesan(e, true); });
+        });
+        renderTabelDaftar();
+      }).catch(galatHalaman);
+    }
+
+    function saringRows() {
+      var f = STATE.filter;
+      var kata = f.kata.toLowerCase();
+      var rows = rowsLingkup().filter(function (r) {
+        if (f.status === 'baru' && !r.baru) return false;
+        if (f.status === 'belum-followup' && !belumDifollow(r)) return false;
+        if (f.status === 'berkas-kurang' && !berkasKurang(r)) return false;
+        if (f.status === 'dijadwalkan' && !sudahJadwalAktif(r)) return false;
+        if (['all', 'baru', 'belum-followup', 'berkas-kurang', 'dijadwalkan'].indexOf(f.status) === -1 && r.status !== f.status) return false;
+        if (f.minat && r.minat !== f.minat) return false;
+        if (f.dari && r.iso && r.iso.slice(0, 10) < f.dari) return false;
+        if (f.sampai && r.iso && r.iso.slice(0, 10) > f.sampai) return false;
+        if (!kata) return true;
+        return (r.nama + ' ' + r.email + ' ' + r.minat + ' ' + r.kampus + ' ' + r.prodi + ' ' + r.hp).toLowerCase().indexOf(kata) !== -1;
+      });
+      if (STATE.sort === 'nama') rows = rows.slice().sort(function (a, b) { return a.nama.localeCompare(b.nama); });
+      else if (STATE.sort === 'terlama') rows = rows.slice().sort(function (a, b) { return (a.iso || '') < (b.iso || '') ? -1 : 1; });
+      else rows = rows.slice().sort(function (a, b) { return (a.iso || '') > (b.iso || '') ? -1 : 1; });
+      return rows;
+    }
+
+    function renderTabelDaftar() {
+      var rows = saringRows();
+      var totalHalaman = Math.max(Math.ceil(rows.length / STATE.perHalaman), 1);
+      if (STATE.halaman > totalHalaman) STATE.halaman = totalHalaman;
+      var mulai = (STATE.halaman - 1) * STATE.perHalaman;
+      const tampil = rows.slice(mulai, mulai + STATE.perHalaman);
+
+      el('tabelDaftar').innerHTML =
+        '<div style="overflow-x:auto"><table><thead><tr>' +
+        '<th>Tanggal daftar</th>' + (semuaTersedia() ? '<th>Brand</th>' : '') + '<th>Pendaftar</th><th class="sembil">Bidang</th><th class="sembil">Asal kampus</th>' +
+        '<th>Status</th><th class="sembil">Berkas</th><th class="sembil">Follow-up</th><th></th>' +
+        '</tr></thead><tbody>' +
+        tampil.map(function (r) {
+          return '<tr data-row="' + r.row + '" data-brand="' + esc(r.brand) + '"' + (STATE.detail && STATE.detail.row === r.row ? ' class="selected"' : '') + '>' +
+            '<td>' + esc(r.timestamp) + (r.baru ? '<span class="tag-baru">baru</span>' : '') + '</td>' +
+            (semuaTersedia() ? '<td>' + esc(r.brand) + '</td>' : '') +
+            '<td><div class="nama">' + esc(r.nama) + '</div><div class="sub">' + esc(r.email) + '</div><div class="sub">' + esc(r.hp) + '</div></td>' +
+            '<td class="sembil">' + esc(potong(r.minat, 26) || '-') + '</td>' +
+            '<td class="sembil">' + esc(potong(r.kampus, 26) || '-') + '<div class="sub">' + esc(potong(r.prodi, 24)) + '</div></td>' +
+            '<td>' + pilStatus(r.status) + '</td>' +
+            '<td class="sembil">' + (r.berkas.total ? r.berkas.ada + ' / ' + r.berkas.total : '-') +
+            (r.dokumenDiperiksa ? '<div class="sub">' + esc(r.dokumenDiperiksa) + '</div>' : '') + '</td>' +
+            '<td class="sembil">' + (r.jumlahFollowUp ? r.jumlahFollowUp + ' catatan' : 'belum') +
+            (r.jadwal ? '<div class="sub">' + esc(potong(r.jadwal, 22)) + '</div>' : '') + '</td>' +
+            '<td><button class="btn ghost kecil" type="button">Detail</button></td></tr>';
+        }).join('') +
+        '</tbody></table></div>' +
+        (rows.length ? '' : '<div class="kosong">' + (rowsLingkup().length
+          ? 'Tidak ada pendaftar yang cocok dengan filter ini.'
+          : 'Belum ada pendaftar yang cocok. Sheet-nya kosong — isi form-nya sekali supaya ada barisnya.') + '</div>') +
+        '<div class="paginasi"><span>' + rows.length + ' data &middot; halaman ' + STATE.halaman + ' dari ' + totalHalaman + '</span>' +
+        '<button class="btn subtle kecil" type="button" id="prev"' + (STATE.halaman === 1 ? ' disabled' : '') + '>Sebelumnya</button>' +
+        '<button class="btn subtle kecil" type="button" id="next"' + (STATE.halaman === totalHalaman ? ' disabled' : '') + '>Berikutnya</button></div>';
+
+      Array.prototype.forEach.call(el('tabelDaftar').querySelectorAll('tbody tr'), function (tr) {
+        tr.querySelector('button').addEventListener('click', function () {
+          bukaDetail(Number(tr.getAttribute('data-row')), tr.getAttribute('data-brand'));
+        });
+      });
+      el('prev').addEventListener('click', function () { STATE.halaman--; renderTabelDaftar(); });
+      el('next').addEventListener('click', function () { STATE.halaman++; renderTabelDaftar(); });
+    }
+
+    // ---------- 3. Seleksi ----------
+    function tampilSeleksi() {
+      var seq = STATE.renderSeq;
+      return pastikanRows().then(function () {
+        if (seq !== STATE.renderSeq) return;
+        var arti = {
+          Seleksi: 'baru daftar, belum diputuskan',
+          Diterima: 'lolos seleksi, magangnya berjalan',
+          Lulus: 'selesai magang, siap dikirimi sertifikat',
+          Ditolak: 'gugur di tahap seleksi',
+          Dikeluarkan: 'berhenti sebelum selesai magang',
+        };
+        var kolom = (STATE.bootstrap.statusList || []).map(function (st) {
+          return { judul: st, tahap: [st], ket: arti[st] || '' };
+        });
+        el('halaman').innerHTML = '<div class="hint" style="margin-bottom:8px">Tarik kartunya ke kolom lain untuk memindahkan status — langsung tersimpan, tidak perlu refresh.</div>' +
+          '<div class="kolom-status" style="grid-template-columns:repeat(' + kolom.length + ',minmax(180px,1fr))">' + kolom.map(function (s) {
+          var isi = rowsLingkup().filter(function (r) { return s.tahap.indexOf(r.status) !== -1; });
+          return '<div data-status="' + esc(s.judul) + '"' + (isi.length ? '' : ' class="kosongKolom"') + '><div class="kepala"><strong>' + esc(s.judul) + '</strong><span class="count">' + isi.length + '</span></div><div class="sub">' + esc(s.ket) + '</div>' +
+            (isi.length ? isi.map(function (r) {
+              var perluWawancara = s.judul === 'Seleksi' || s.judul === 'Ditolak';
+              return '<div class="kartu" draggable="true" data-row="' + r.row + '" data-brand="' + esc(r.brand) + '"><div class="nm">' + esc(r.nama) + '</div>' +
+                '<div class="sub">' + esc(potong(r.minat, 34) || '-') + '</div>' +
+                '<div class="sub">' + esc(r.timestamp) + '</div>' +
+                (perluWawancara
+                  ? '<div class="sub" style="margin-top:6px">' + (r.jadwal
+                      ? '<span class="pill hijau">sudah wawancara</span> <span class="sub">' + esc(potong(r.jadwal, 24)) + '</span>'
+                      : '<span class="pill merah">belum wawancara</span>') + '</div>'
+                  : '') +
+                '<div class="sub" style="margin-top:4px">' + (r.jumlahFollowUp ? r.jumlahFollowUp + ' catatan follow-up' : 'belum di-follow up') + '</div></div>';
+            }).join('') : '<div class="kosong">Belum ada yang di tahap ini.</div>') + '</div>';
+        }).join('') + '</div>';
+
+      Array.prototype.forEach.call(el('halaman').querySelectorAll('.kartu'), function (c) {
+        c.addEventListener('click', function () {
+          if (Date.now() - STATE.seretAkhir < 300) return;
+          bukaDetail(Number(c.getAttribute('data-row')), c.getAttribute('data-brand'));
+        });
+        c.addEventListener('dragstart', function (ev) {
+          STATE.yangDiseret = { row: Number(c.getAttribute('data-row')), brand: c.getAttribute('data-brand') };
+          c.classList.add('seret');
+          try { ev.dataTransfer.setData('text/plain', c.getAttribute('data-row')); } catch (e) { /* IE/iframe lama */ }
+          ev.dataTransfer.effectAllowed = 'move';
+        });
+        c.addEventListener('dragend', function () {
+          c.classList.remove('seret');
+          STATE.seretAkhir = Date.now();
+        });
+      });
+      Array.prototype.forEach.call(el('halaman').querySelectorAll('[data-status]'), function (kol) {
+        kol.addEventListener('dragover', function (ev) {
+          ev.preventDefault();
+          ev.dataTransfer.dropEffect = 'move';
+          kol.classList.add('sasar');
+        });
+        kol.addEventListener('dragleave', function () { kol.classList.remove('sasar'); });
+        kol.addEventListener('drop', function (ev) {
+          ev.preventDefault();
+          kol.classList.remove('sasar');
+          var yang = STATE.yangDiseret;
+          STATE.seretAkhir = Date.now();
+          STATE.yangDiseret = null;
+          if (!yang) return;
+          letakkanKolom(yang.row, yang.brand, kol.getAttribute('data-status'));
+        });
+      });
+      }).catch(galatHalaman);
+    }
+
+    // Tarik-lepas di papan: papan berubah duluan, server menyusul, balik lagi kalau server menolak.
+    function letakkanKolom(rowNum, merek, tujuan) {
+      var punya = STATE.rowsByBrand[merek];
+      var baris = punya ? (punya.rows || []).filter(function (r) { return r.row === rowNum; })[0] : null;
+      if (!baris || baris.status === tujuan) { tampilSeleksi(); return; }
+      var lanjut = function () {
+        var lama = baris.status;
+        var diDaftar = STATE.rows.filter(function (r) { return r.row === rowNum && r.brand === merek; })[0];
+        baris.status = tujuan;
+        if (diDaftar) diDaftar.status = tujuan;
+        if (STATE.detail && STATE.detail.row === rowNum && STATE.detail.brand === merek) STATE.detail.status = tujuan;
+        tampilSeleksi();
+        run('updateStatus', [merek, rowNum, tujuan]).then(function (res) {
+          if (STATE.detail && STATE.detail.row === rowNum) {
+            STATE.detail.riwayat = (STATE.detail.riwayat || []).concat([res.waktu + ' - Status: ' + lama + ' -> ' + tujuan]);
+            renderPanel();
+          }
+          pesan(baris.nama + ' sekarang ' + tujuan);
+          segarkan(merek).catch(function () {});
+          return null;
+        }).catch(function (e) {
+          baris.status = lama;
+          if (diDaftar) diDaftar.status = lama;
+          pesan(e, true);
+          tampilSeleksi();
+        });
+      };
+      if (tujuan === 'Ditolak' || tujuan === 'Dikeluarkan') {
+        mintaKonfirmasi('Pindahkan ke ' + tujuan + '?', baris.nama + ' akan menjadi ' + tujuan + ' dan tercatat di riwayat.', 'Ya, pindahkan', lanjut);
+      } else lanjut();
+    }
+
+    // ---------- 4. Laporan ----------
+    function tampilLaporan() {
+      // Kotak tanggal + tombol "Semua periode" dihapus atas permintaan admin: laporan selalu menghitung semua data.
+      el('halaman').innerHTML = '<div class="card"><div id="isiLaporan">Memuat...</div></div>';
+      var p = STATE.prefetch;
+      STATE.prefetch = null;
+      var l = p ? (STATE.lingkup === 'semua' ? p.laporanSemua : p.laporan) : null;
+      if (!l && STATE.laporanCache) {
+        l = STATE.lingkup === 'semua' ? STATE.laporanCache.semua : STATE.laporanCache.perBrand[STATE.brand];
+      }
+      if (l) { renderLaporan(l); return Promise.resolve(); }
+      return muatLaporan();
+    }
+
+    function muatLaporan() {
+      var merek = STATE.lingkup === 'semua' ? null : STATE.brand;
+      return run('getLaporan', [merek, '', ''])
+        .then(function (l) {
+          STATE.laporanCache = STATE.laporanCache || { semua: null, perBrand: {} };
+          if (merek === null) STATE.laporanCache.semua = l;
+          else STATE.laporanCache.perBrand[merek] = l;
+          renderLaporan(l);
+        })
+        .catch(function (e) { el('isiLaporan').innerHTML = '<div class="kosong">' + esc(e) + '</div>'; });
+    }
+
+    // Daftar singkat di bawah tile Laporan. Laporan tidak lagi memakai batas tanggal,
+    // jadi angkanya selalu seluruh data merek yang sedang dibuka.
+    function tampilkanDiLaporan(judul, k) {
+      var kotak = el('hasilLaporan');
+      var rows = rowsLingkup().filter(function (r) {
+        if (k === 'gugur') return r.status === 'Ditolak' || r.status === 'Dikeluarkan';
+        if (k === 'all') return true;
+        return r.status === k;
+      });
+      var shown = rows.slice(0, 12);
+      kotak.innerHTML =
+        '<div class="card" style="margin-bottom:14px">' +
+          '<div class="kepala-sasaran"><h3>' + esc(judul) + ' <span class="count">' + rows.length + '</span></h3>' +
+          '<span><button class="btn subtle kecil" type="button" data-tutup>Tutup</button></span></div>' +
+          (rows.length
+            ? '<div class="baris-list">' + shown.map(function (r) {
+                return '<div class="isi bisa" data-row="' + r.row + '" data-brand="' + esc(r.brand || STATE.brand) + '"><div class="avatar">' + esc(inisial(r.nama)) + '</div>' +
+                  '<div class="grow"><div class="nama">' + esc(r.nama) + (r.baru ? '<span class="tag-baru">baru</span>' : '') + '</div>' +
+                  '<div class="sub">' + esc(potong(r.minat, 46) || '-') + ' &middot; ' + esc(r.timestamp) + '</div></div>' +
+                  pilStatus(r.status) + '</div>';
+              }).join('') +
+              (rows.length > shown.length ? '<div class="hint" style="margin-top:8px">Menampilkan 12 dari ' + rows.length + ' orang.</div>' : '') +
+              '</div>'
+            : '<div class="kosong">Tidak ada yang cocok di merek ini.</div>') +
+        '</div>';
+      Array.prototype.forEach.call(kotak.querySelectorAll('[data-row]'), function (b) {
+        b.addEventListener('click', function () { bukaDetail(Number(b.getAttribute('data-row')), b.getAttribute('data-brand')); });
+      });
+      kotak.querySelector('[data-tutup]').addEventListener('click', function () { kotak.innerHTML = ''; });
+      kotak.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function renderLaporan(l) {
+        STATE.laporan = l;
+        var s = l.stats;
+        el('isiLaporan').innerHTML =
+          '<div class="sub" style="margin-bottom:12px">' + (l.lingkup === 'semua' ? 'Semua brand' : esc(l.lingkup)) + '</div>' +
+          '<div class="grid tiles" style="margin-bottom:14px">' +
+            '<button class="tile" type="button" data-lk="all"><div class="num">' + l.total + '</div><div class="lbl">Total pendaftar</div></button>' +
+            '<button class="tile" type="button" data-lk="Diterima"><div class="num">' + (s.Diterima || 0) + '</div><div class="lbl">Diterima</div></button>' +
+            '<button class="tile" type="button" data-lk="Lulus"><div class="num">' + (s.Lulus || 0) + '</div><div class="lbl">Lulus</div></button>' +
+            '<button class="tile" type="button" data-lk="gugur"><div class="num">' + ((s.Ditolak || 0) + (s.Dikeluarkan || 0)) + '</div><div class="lbl">Ditolak / dikeluarkan</div></button>' +
+            '<button class="tile" type="button" data-lk="sertifikat"><div class="num">' + l.sudahTerkirim + '</div><div class="lbl">Sertifikat terkirim</div></button>' +
+          '</div>' +
+          '<div id="hasilLaporan"></div>' +
+          '<div class="card" id="kartuSertifikat"><h3>Pengiriman sertifikat</h3>' +
+            '<div class="hint">Daftar ini peserta berstatus Lulus. "Unduh PDF" membuka file sertifikat di Drive; kalau tertulis "File hilang", filenya sudah dibuang dari Drive — kirim ulang saja.</div>' +
+            (l.sertifikat.length
+              ? '<div style="overflow-x:auto"><table class="rapat"><thead><tr><th>Penerima</th>' + (l.lingkup === 'semua' ? '<th>Brand</th>' : '') + '<th class="sembil">Bidang</th><th>Status</th><th class="sembil">Berkas</th><th></th></tr></thead><tbody>' +
+                l.sertifikat.map(function (s) {
+                  return '<tr><td><div class="nama">' + esc(s.nama) + '</div><div class="sub">' + esc(s.email) + '</div></td>' +
+                    (l.lingkup === 'semua' ? '<td>' + esc(s.brand) + '</td>' : '') +
+                    '<td class="sembil">' + esc(potong(s.minat, 26) || '-') + '</td>' +
+                    '<td><span class="pill ' + (s.state === 'Terkirim' ? 'hijau' : 'merah') + '">' + esc(s.state) + '</span></td>' +
+                    '<td class="sembil">' + (s.link
+                      ? '<a href="' + esc(s.link) + '" target="_blank" rel="noopener" style="color:#4f46e5">Unduh PDF</a>'
+                      : (s.state === 'File hilang' ? '<span class="sub">filenya sudah tidak ada di Drive</span>' : '<span class="sub">belum ada</span>')) + '</td>' +
+                    '<td>' + (s.state === 'Terkirim' ? '' : '<button class="btn ghost kecil" type="button" data-kirim="' + esc(s.brand) + '|' + s.row + '">Kirim sekarang</button>') + '</td></tr>';
+                }).join('') + '</tbody></table></div>'
+              : '<div class="kosong">Belum ada peserta berstatus Lulus.</div>') +
+          '</div>' +
+          '<div class="grid dua" style="margin-top:14px">' +
+            '<div class="card"><h3>Pendaftar per bulan</h3>' + kolomHtml(l.perBulan, true) + '</div>' +
+            '<div class="card"><h3>Per bidang</h3>' + kolomHtml(l.perMinat, true) + '</div>' +
+          '</div>' +
+          '<div class="card" style="margin-top:14px"><h3>Asal kampus terbanyak</h3>' + (l.perKampus.length ? kolomHtml(l.perKampus, true) : '<div class="kosong">Belum ada datanya. Isi form-nya sekali supaya tab ini terisi.</div>') + '</div>';
+
+        Array.prototype.forEach.call(el('isiLaporan').querySelectorAll('[data-kirim]'), function (b) {
+          b.addEventListener('click', function () {
+            // Daftar ini bisa berisi beberapa brand sekaligus, jadi brand-nya ikut dibawa di atributnya.
+            var bagian = String(b.getAttribute('data-kirim')).split('|');
+            kirimSertifikatBaris(Number(bagian[1]), bagian[0]);
+          });
+        });
+
+        Array.prototype.forEach.call(el('isiLaporan').querySelectorAll('[data-lk]'), function (b) {
+          b.addEventListener('click', function () {
+            var judul = b.querySelector('.lbl').textContent.trim(), kunci = b.getAttribute('data-lk');
+            if (kunci === 'sertifikat') {
+              el('kartuSertifikat').scrollIntoView({ behavior: 'smooth', block: 'start' });
+              return;
+            }
+            var merek = STATE.brand;
+            // Kartu yang diklik terakhir yang boleh menulis hasil, supaya hasil klik sebelumnya
+            // tidak datang terlambat dan menampilkan daftar milik kartu lain.
+            STATE.laporanTerakhir = judul;
+            pastikanRows().then(function () {
+              if (!sedangLaporan() || STATE.brand !== merek || STATE.laporanTerakhir !== judul || !el('hasilLaporan')) return;
+              tampilkanDiLaporan(judul, kunci);
+            }).catch(galatHalaman);
+          });
+        });
+    }
+
+    // ---------- 5. Pengaturan ----------
+    function tampilPengaturan() {
+      el('halaman').innerHTML = '<div id="isiSetting">Memuat...</div>';
+      var k = STATE.prefetch && STATE.prefetch.konfigurasi ? STATE.prefetch.konfigurasi : STATE.konfigurasi;
+      STATE.prefetch = null;
+      if (k) {
+        // Layar digambar dari yang terakhir ada, servernya nyusul di belakang.
+        renderSetting(k);
+        // Jangan menimpa layar sambil admin mengisi form integrasi.
+        if (!STATE.integrasiDraft) run('getKonfigurasi').then(renderSetting).catch(function (e) { /* yang di layar tetap boleh dibaca */ });
+        return Promise.resolve();
+      }
+      return run('getKonfigurasi').then(renderSetting).catch(galatHalaman);
+    }
+
+
+    // ---------- Integrasi Spreadsheet (menu sendiri) ----------
+    // Hasil "Cek Akses Tulis": menjawab kenapa data bisa dilihat tapi tidak bisa diubah.
+    function tampilAkses(a) {
+      var boleh = a.editor === true;
+      var bagian = ['<div style="margin-top:8px"><strong>' + esc(a.nama || a.id) + '</strong> &middot; pemilik: ' + esc(a.pemilik || '?') +
+        ' &middot; tingkat akses: ' + esc(a.akses || '?') + '</div>' +
+        '<div style="margin-top:4px">Boleh diedit aplikasi: <strong style="color:' + (boleh ? '#047857' : '#b91c1c') + '">' +
+        (a.editor === null ? 'tidak terdeteksi' : (boleh ? 'YA' : 'TIDAK')) + '</strong> &middot; aplikasi jalan sebagai: ' + esc(a.yangJalan || '?') + '</div>'];
+      if (!boleh) {
+        bagian.push('<div class="hint" style="margin-top:6px">Kalau datanya bisa dilihat tapi tidak bisa diubah, ini penyebabnya: ' +
+          'buka file itu pakai akun pemiliknya → <strong>Bagikan</strong> → tambahkan <strong>' + esc(a.yangJalan || 'akun yang menjalankan') +
+          '</strong> dengan peran <strong>Editor</strong>. Kalau daftarnya tidak mau menerima akun itu, admin Google-nya membatasi berbagi ke luar organisasi — ' +
+          'jalur lain: salin tab datanya ke spreadsheet yang sudah dipakai aplikasi ini.</div>');
+      }
+      if (a.tab && a.tab.length) bagian.push('<div class="sub" style="margin-top:4px">Tab terbaca: ' + esc(a.tab.join(', ')) + '</div>');
+      (a.catatan || []).forEach(function (c) { bagian.push('<div class="sub" style="color:#b91c1c">' + esc(c) + '</div>'); });
+      return bagian.join('');
+    }
+
+    function integrasiKartuHtml(r, k) {
+      var terhubung = r['Status Koneksi'] === 'Terhubung';
+      var pesan = terhubung ? 'Semua link spreadsheet dan Drive untuk brand ini terbaca dashboard.'
+        : r['Status Koneksi'] === 'Belum Diuji' ? 'Konfigurasi ini belum pernah diuji koneksinya.'
+        : 'Koneksi gagal: ' + potong(r['Error Terakhir'] || 'belum pernah diuji di proyek ini — tekan Uji Koneksi untuk lihat sebab aslinya', 90);
+      var tombol = function (attr, teks) {
+        return '<button class="btn subtle kecil" type="button" ' + attr + '="' + esc(r.ID) + '">' + teks + '</button>';
+      };
+      return '<div class="card"><h3>' + esc(r['Nama Konfigurasi']) + '</h3>' +
+        '<div class="sambung' + (terhubung ? '' : ' gagal') + '"><span class="tit">' + esc(pesan) + '</span>' +
+          (terhubung ? '<span class="pill hijau">Terhubung</span>' : '<span class="pill merah">' + esc(r['Status Koneksi']) + '</span>') + '</div>' +
+        '<dl class="kv">' +
+          barisKv('Brand', r.Brand) +
+          barisKv('Program', r.Program || '-') +
+          barisKv('URL Spreadsheet', r['URL Spreadsheet']) +
+          barisKv('Spreadsheet ID', r['Spreadsheet ID']) +
+          barisKv('Nama sheet respons', r['Nama Sheet'] || '(tab jawaban pertama)') +
+          barisKv('URL Google Form', r['URL Google Form'] || '-') +
+          (r['Form ID'] || r['URL Edit Form']
+            ? '<dt>Edit Google Form</dt><dd><a href="' + esc(r['URL Edit Form'] || ('https://docs.google.com/forms/d/' + encodeURIComponent(r['Form ID']) + '/edit')) + '" target="_blank" rel="noopener">buka setelan form &middot; tab Tanggapan</a></dd>'
+            : '<dt>Edit Google Form</dt><dd>Form ID belum tersimpan &mdash; tekan Sinkronkan atau Uji Koneksi dulu.</dd>') +
+          barisKv('Link dashboard brand ini', k.urlDashboard ? k.urlDashboard + '?brand=' + encodeURIComponent(r.Brand || '') : '-') +
+          barisKv('Status', r.Status + (r.dipakai ? ' · sudah dibaca dashboard' : ' · belum disinkronkan')) +
+          barisKv('Terakhir diuji', r['Terakhir Diuji'] || '-') +
+          barisKv('Terakhir berhasil terhubung', r['Terakhir Terhubung'] || '-') +
+          (r.Deskripsi ? barisKv('Deskripsi', r.Deskripsi) : '') +
+        '</dl>' +
+        '<div class="lebar" style="margin-top:10px">' + tombol('data-i-kolom', 'Lihat Kolom') + ' ' + tombol('data-i-uji', 'Uji Koneksi') + ' ' +
+          tombol('data-i-sinkron', 'Sinkronkan') + ' ' + tombol('data-i-edit', 'Edit Konfigurasi') + '</div>' +
+          '<div class="lebar" style="margin-top:6px">' +
+          ((r['Form ID'] || r['URL Google Form']) ? '<button class="btn subtle kecil" type="button" data-i-pindah="' + esc(r.ID) + '" title="Form-nya disetel ulang supaya jawaban barunya masuk ke tab sendiri di spreadsheet dashboard">Pindahkan jawaban form</button> ' : '') +
+          '<button class="btn subtle kecil" type="button" data-i-status="' + esc(r.ID) + '|' + (r.Status === 'Aktif' ? 'Nonaktif' : 'Aktif') + '">' +
+          (r.Status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan') + '</button> ' +
+          '<button class="btn subtle kecil" type="button" data-i-akses="' + esc(r.ID) + '" title="Menanya ke Drive: akun yang menjalankan aplikasi ini boleh mengedit file itu tidak? Tidak menulis apa pun.">Cek Akses Tulis</button> ' +
+          '<button class="btn subtle kecil" type="button" data-i-hapus="' + esc(r.ID) + '" title="Hapus konfigurasi ini dari daftar sumber">Hapus</button></div>' +
+          '<div class="sub" id="akses-' + esc(r.ID) + '"></div></div>';
+    }
+
+    var labelSheet = function (s, dipilih, catatan) {
+      return esc(s.nama) + ' — ' + s.baris + ' baris' + (catatan ? ' · ' + catatan : '') + (s.nama === dipilih ? ' ✔ dipilih' : '');
+    };
+
+    // Konfigurasi lain yang sudah membaca tab bernama ini di spreadsheet yang sedang dipilih.
+    function integrasiPemakaiTab(nama) {
+      var idSs = STATE.integrasiSsId || '';
+      var edit = STATE.integrasiEdit || '';
+      return (STATE.integrasi || []).filter(function (r) {
+        return r.ID !== edit && (!idSs || r['Spreadsheet ID'] === idSs) &&
+          String(r['Nama Sheet'] || '') === String(nama);
+      })[0] || null;
+    }
+
+    function integrasiOpsiSheet() {
+      var daftar = STATE.integrasiSheets || [];
+      var dipilih = (STATE.integrasiDraft && STATE.integrasiDraft.namaSheet) || '';
+      var opsi = ['<option value="">' +
+        (dipilih ? '(biarkan: tab jawaban form ini)' : '(otomatis: tab jawaban pertama)') + '</option>'];
+      if (dipilih && !daftar.some(function (s) { return s.nama === dipilih; })) {
+        opsi.push('<option value="' + esc(dipilih) + '" selected>' +
+          labelSheet({ nama: dipilih, baris: '?' }, dipilih, 'dari form ini') + '</option>');
+      }
+      daftar.forEach(function (s) {
+        var catatan = [];
+        if (s.nama === STATE.integrasiSheetForm) catatan.push('tempat form ini menulis jawaban');
+        var pemakai = integrasiPemakaiTab(s.nama);
+        if (pemakai) catatan.push('sudah dipakai "' + pemakai['Nama Konfigurasi'] + '"');
+        opsi.push('<option value="' + esc(s.nama) + '"' + (s.nama === dipilih ? ' selected' : '') + '>' +
+          labelSheet(s, dipilih, catatan.join(' · ')) + '</option>');
+      });
+      return opsi.join('');
+    }
+
+    function refreshIsianSheet() {
+      var kotak = el('iSheet');
+      if (kotak) kotak.innerHTML = integrasiOpsiSheet();
+      var pesan = el('statusIntegrasi');
+      if (!pesan || !STATE.integrasiSheets) return;
+      var bentrok = STATE.integrasiSheetForm && integrasiPemakaiTab(STATE.integrasiSheetForm);
+      pesan.textContent = bentrok
+        ? 'Tab jawaban form ini (' + STATE.integrasiSheetForm + ') sudah dipakai konfigurasi "' +
+          bentrok['Nama Konfigurasi'] + '". Simpan saja lalu tekan "Pindahkan jawaban form" supaya form ini dapat tab sendiri, atau "Tetap buat" kalau memang mau baca tab yang sama.'
+        : STATE.integrasiSheets.length + ' tab terbaca. Pilih tab tempat jawaban form ini masuk' +
+          (STATE.integrasiEdit ? ' (tab yang sekarang dipakai konfigurasi ini sudah terpilih).' : '.');
+    }
+
+    function integrasiFormHtml() {
+      var d = STATE.integrasiDraft || {};
+      var nilai = function (k) { return esc(d[k] || ''); };
+      return '<div class="card" id="formIntegrasi">' +
+        '<h3>' + (STATE.integrasiEdit ? 'Edit konfigurasi' : 'Konfigurasi baru') + '</h3>' +
+        '<div id="iGalat" style="display:none;margin:0 0 10px;padding:8px 10px;border-radius:6px;font-size:12.5px"></div>' +
+        '<div class="jadwal">' +
+          '<input class="lebar" id="iNama" placeholder="Nama konfigurasi, contoh: Form MagangJogja Oktober" value="' + nilai('nama') + '">' +
+          '<input class="lebar" id="iBrand" placeholder="Brand, contoh: MagangJogja" value="' + nilai('brand') + '">' +
+          '<input class="lebar" id="iProgram" placeholder="Nama program magang (opsional)" value="' + nilai('program') + '">' +
+          '<input class="lebar" id="iForm" placeholder="Link Google Form — boleh cuma ini saja, spreadsheet + tab jawabannya dicari otomatis" value="' + nilai('urlForm') + '">' +
+          '<input class="lebar" id="iEdit" placeholder="URL edit Google Form (kosongkan = diambil otomatis dari ID form)" value="' + nilai('urlEdit') + '">' +
+          '<input class="lebar" id="iSs" placeholder="Link Google Spreadsheet respons (boleh dikosongkan kalau link form sudah diisi)" value="' + nilai('urlSpreadsheet') + '">' +
+          '<select id="iSheet">' + integrasiOpsiSheet() + '</select>' +
+          '<input class="lebar" id="iDesk" placeholder="Deskripsi (opsional)" value="' + nilai('deskripsi') + '">' +
+          '<select id="iStatus"><option' + (d.status === 'Nonaktif' ? '' : ' selected') + '>Aktif</option><option' + (d.status === 'Nonaktif' ? ' selected' : '') + '>Nonaktif</option></select>' +
+        '</div>' +
+        '<div class="hint" style="margin-top:8px"><strong>Tab jawaban</strong> = bagian spreadsheet tempat Google Form menuliskan pendaftar baru. Kalau link form diisi, tab-nya ketahuan sendiri setelah tombol di bawah ditekan. Pilih tab yang masih kosong / belum dipakai konfigurasi lain.</div>' +
+        '<div class="lebar"><button class="btn subtle kecil" type="button" id="iCariSheet">Ambil daftar sheet dari spreadsheet itu</button></div>' +
+        '<div class="lebar" style="margin-top:8px"><button class="btn" type="button" id="iSimpan">' + (STATE.integrasiEdit ? 'Simpan perubahan &amp; uji lagi' : 'Simpan &amp; Hubungkan') + '</button>' +
+          '<button class="btn subtle" type="button" id="iBatal" style="margin-left:8px">Batal</button>' +
+          '<span class="sub" id="statusIntegrasi" style="margin-left:10px"></span></div></div>';
+    }
+
+    // Keterangan hasil "Ambil semua tab" — dibiarkan di layar sampai halaman dimuat ulang,
+    // jadi admin sempat baca tab mana yang masuk dan mana yang dilewati.
+    function tampilAmbilTab(h) {
+      var masuk = h.masuk || [];
+      var dilewati = h.dilewati || [];
+      var gagal = h.gagal || [];
+      if (!masuk.length && !dilewati.length && !gagal.length) return '';
+      var pendaftar = masuk.reduce(function (a, m) { return a + (m.baris || 0); }, 0);
+      var bagian = ['<div class="hint" style="margin-top:10px"><strong>' + masuk.length + ' brand masuk</strong>' +
+        ' &middot; ' + pendaftar + ' pendaftar terbaca' +
+        (dilewati.length ? ' &middot; ' + dilewati.length + ' tab dilewati' : '') +
+        (gagal.length ? ' &middot; ' + gagal.length + ' gagal' : '') + '</div>'];
+      if (masuk.length) bagian.push('<div class="sub" style="margin-top:6px">' + masuk.map(function (m) {
+        return '<strong>' + esc(m.brand) + '</strong>' + (m.tab === m.brand ? '' : ' &mdash; tab ' + esc(m.tab)) +
+          ' &middot; ' + m.baris + ' pendaftar';
+      }).join('<br>') + '</div>');
+      if (dilewati.length) bagian.push('<div class="sub" style="margin-top:6px">Dilewati:' +
+        dilewati.map(function (d) { return '<br>' + esc(d.tab) + ' &mdash; ' + esc(d.alasan); }).join('') + '</div>');
+      if (gagal.length) bagian.push('<div class="hint" style="margin-top:6px;color:#b91c1c">Gagal:' +
+        gagal.map(function (g) { return '<br>' + esc(g); }).join('') + '</div>');
+      return '<div style="margin-top:10px;border-top:1px solid #e7eaf2;padding-top:4px">' + bagian.join('') + '</div>';
+    }
+
+    function tampilIntegrasi() {
+      el('halaman').innerHTML = '<div id="isiIntegrasi">Memuat...</div>';
+      var k = (STATE.prefetch && STATE.prefetch.konfigurasi) || STATE.konfigurasi;
+      STATE.prefetch = null;
+      if (k) { STATE.konfigurasi = k; renderIntegrasi(); return Promise.resolve(); }
+      return run('getKonfigurasi').then(function (h) { STATE.konfigurasi = h; renderIntegrasi(); }).catch(galatHalaman);
+    }
+
+    function renderIntegrasi() {
+      var k = STATE.konfigurasi || { integrasi: [] };
+      STATE.integrasi = k.integrasi || [];
+      if (!el('isiIntegrasi')) return;
+      el('isiIntegrasi').innerHTML =
+        '<div class="card" style="margin-bottom:14px"><h3>Sumber data pendaftaran</h3>' +
+          '<div class="hint">Daftar konfigurasi disimpan di tab <strong>Integrasi</strong> pada file "' + esc(k.fileKonfigurasi || 'log') + '" — beda file dari spreadsheet jawaban pendaftar. Menambah brand atau form baru tidak perlu mengubah kode.</div>' +
+          '<div class="hint" style="margin-top:8px"><strong>Cara menghubungkan form asli</strong>:' +
+          '<ol style="margin:6px 0 0 18px;padding:0">' +
+          '<li>Buka <a href="https://forms.google.com" target="_blank" rel="noopener">forms.google.com</a> → buat form (kolom pertama <em>Timestamp</em> otomatis, lalu <em>Nama Lengkap</em>, <em>Email</em>, <em>No. HP</em>, <em>Asal Sekolah/Kampus</em>, <em>Program magang yang diminati</em>).</li>' +
+          '<li>Form → <strong>Kirim</strong> → ikon rantai → salin linknya; jawaban form diarahkan ke spreadsheet yang dipakai dashboard (titik tiga → <strong>Pilih tujuan tanggapan</strong>). Kalau menunya tidak ketemu, lewati saja — nanti tekan <strong>Pindahkan jawaban form</strong> di kartunya.</li>' +
+          '<li>Isi form itu 1x → klik <strong>"+ Tambah Konfigurasi Baru"</strong> di atas → <strong>tempel link form-nya saja</strong> (spreadsheet + tab jawabannya dicari otomatis) → Simpan &amp; Hubungkan. Brand baru langsung muncul di bilah kiri; tekan Sinkronkan kalau ada jawaban yang belum masuk.</li>' +
+          '</ol></div>' +
+          (k.peringatan ? '<div class="hint" style="margin-top:8px;color:#b91c1c">' + esc(k.peringatan) + ' Yang lain tetap ditampilkan seperti biasa.</div>' : '') +
+          '<div class="lebar" style="margin-top:10px"><button class="btn" type="button" id="btnIntegrasiBaru">+ Tambah Konfigurasi Baru</button>' +
+          '<button class="btn subtle" type="button" id="btnSinkronSemua" style="margin-left:8px">Sinkronkan semua</button>' +
+          '<button class="btn subtle" type="button" id="btnDuplikat" style="margin-left:8px" title="Mencari konfigurasi yang brand + spreadsheet + tab jawabannya sama persis (hasil menekan Simpan berkali-kali) lalu membuang yang kembar, yang tertua tetap dipertahankan.">Bersihkan duplikat</button></div></div>' +
+        '<div class="card" style="margin-bottom:14px"><h3>Ambil semua tab sekaligus</h3>' +
+          '<div class="hint">Satu spreadsheet biasanya punya lebih dari satu tab jawaban. Tekan tombol di bawah, maka <strong>semua tab yang ada di spreadsheet itu ikut didaftarkan</strong> — tiap tab jadi satu brand dengan nama sama seperti nama tab-nya, dan langsung muncul di bilah kiri. Brand tidak perlu diketik satu-satu lagi.</div>' +
+          '<div class="jadwal" style="margin-top:8px"><input class="lebar" id="iAutoSs" placeholder="Link spreadsheet (kosongkan = spreadsheet yang sudah terhubung diperiksa semua)">' +
+            '<div class="lebar"><button class="btn" type="button" id="btnAmbilTab" title="Membaca semua tab di spreadsheet itu. Tab Integrasi, tab Log, tab tersembunyi dan tab kosong dilewati. Brand yang sudah ada tidak pernah diubah.">Ambil semua tab</button>' +
+            '<span class="sub" id="statusAmbilTab" style="margin-left:10px"></span></div></div>' +
+          '<div class="hint" style="margin-top:2px">Tab yang kolom <em>Nama</em> atau <em>Email</em>-nya tidak dikenali ikut dilewati, bukan dipaksa masuk — brand tanpa data cuma memenuhi bilah kiri. Alasannya tampil di sini setelah tombol ditekan.</div>' +
+          (STATE.ambilTab ? tampilAmbilTab(STATE.ambilTab) : '') + '</div>' +
+        (STATE.integrasi.length
+          ? '<div class="tanda-bawah"><b>' + STATE.integrasi.length + ' konfigurasi</b>' +
+              (STATE.integrasi.length > 2 ? '<span class="panah-bawah">&darr;</span><span>daftar ini bisa digulir sendiri — yang di bawah tidak membuat halaman memanjang</span>' : '') +
+            '</div>' +
+            '<div class="tumpuk-integrasi">' + STATE.integrasi.map(function (r) { return integrasiKartuHtml(r, k); }).join('') + '</div>'
+          : '<div class="card"><div class="kosong">Belum ada integrasi tersimpan. Klik "+ Tambah Konfigurasi Baru" untuk menghubungkan form dan spreadsheet jawabannya.</div></div>') +
+        '<div id="kolomIntegrasi"></div>' +
+        '<div class="card" style="margin-top:14px"><h3>Rapikan sisa</h3>' +
+          '<div class="hint">Tiap form baru yang ditautkan ke spreadsheet ini membuat tab jawaban baru, jadi tab lama menumpuk. <strong>Buang form-nya dulu, baru tab-nya</strong> — Google tidak mengizinkan tab jawaban dihapus selama masih ada form yang menautkan diri. Tab hanya dihapus kalau benar-benar kosong; form masuk Trash Drive (masih bisa dipulihkan 30 hari).</div>' +
+          '<div class="lebar" style="margin-top:10px"><button class="btn subtle" type="button" id="btnCekSisa">Cek sisa</button>' +
+          '<button class="btn subtle" type="button" id="btnBersihContoh" style="margin-left:8px" title="Membuang brand contoh (MagangJogja, FreelanceJogja, SkillUp Jogja): barisnya, tab jawabannya, form CONTOH-nya ke Trash, kartunya di Integrasi, dan brandnya dari sidebar. Brand kantor tidak disentuh.">Bersihkan data contoh</button>' +
+          '<span class="sub" id="statusSisa" style="margin-left:10px"></span></div>' +
+          '<div class="hint" style="margin-top:8px">Sudah tidak butuh brand contoh lagi? Tekan <strong>Bersihkan data contoh</strong> — pendaftar asli dari kantor tidak ikut terhapus, dan brand contoh yang di tab-nya masih ada jawaban asli malah ditolak.</div>' +
+          '<div id="isiSisa"></div></div>';
+      bukaTutupDialog();
+      pasangIntegrasi();
+    }
+
+    // Form tambah/edit konfigurasi muncul sebagai popup, bukan kartu di tengah halaman.
+    // Form baru dibuka = kosong; form lama dibuka = ikut isian aslinya. Jangan dipanen dari layar.
+    function simpanDraftDariLayar() {
+      if (STATE.integrasiDraftKunci) { STATE.integrasiDraftKunci = false; return; }
+      if (!STATE.integrasiDraft || !el('iNama')) return;
+      STATE.integrasiDraft = {
+        nama: el('iNama').value, brand: el('iBrand').value, program: el('iProgram').value,
+        urlForm: el('iForm').value, urlEdit: el('iEdit').value, urlSpreadsheet: el('iSs').value,
+        namaSheet: el('iSheet').value, deskripsi: el('iDesk').value, status: el('iStatus').value,
+      };
+    }
+
+    function bukaTutupDialog() {
+      simpanDraftDariLayar();
+      var box = el('dialogIntegrasi');
+      if (!box) return;
+      var buka = !!(STATE.integrasiEdit || STATE.integrasiDraft);
+      if (buka) box.innerHTML = integrasiFormHtml();
+      else box.innerHTML = '';
+      box.classList.toggle('open', buka);
+      el('dialogScrim').classList.toggle('open', buka);
+    }
+
+    function pasangIntegrasi() {
+      function muatKonfigLagi() {
+        return run('getKonfigurasi').then(function (k) { STATE.konfigurasi = k; renderIntegrasi(); });
+      }
+      function galatForm(isi, hijau) {
+        var box = el('iGalat');
+        if (!box) return false;
+        box.style.display = isi ? 'block' : 'none';
+        box.style.background = hijau ? '#ecfdf5' : '#fef2f2';
+        box.style.border = '1px solid ' + (hijau ? '#a7f3d0' : '#fecaca');
+        box.style.color = hijau ? '#047857' : '#b91c1c';
+        box.textContent = isi;
+        if (isi) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return true;
+      }
+      function nilaiForm() {
+        return {
+          id: STATE.integrasiEdit || '',
+          nama: el('iNama').value, brand: el('iBrand').value, program: el('iProgram').value,
+          urlForm: el('iForm').value, urlEdit: el('iEdit').value, urlSpreadsheet: el('iSs').value,
+          namaSheet: el('iSheet').value, deskripsi: el('iDesk').value, status: el('iStatus').value,
+        };
+      }
+      el('btnIntegrasiBaru').addEventListener('click', function () {
+        STATE.integrasiEdit = null;
+        STATE.integrasiSheets = null;
+        STATE.integrasiSsId = '';
+        STATE.integrasiSheetForm = '';
+        STATE.integrasiDraft = { nama: '', brand: '', program: '', urlForm: '', urlEdit: '', urlSpreadsheet: '', namaSheet: '', deskripsi: '', status: 'Aktif' };
+        STATE.integrasiDraftKunci = true;
+        renderIntegrasi();
+        el('iNama').focus();
+      });
+      // Isian konfigurasi sekarang hidup di dalam popup, jadi elemennya hanya ada saat popup terbuka.
+      var formTerbuka = !!el('iSimpan');
+      if (formTerbuka) el('iBatal').addEventListener('click', function () {
+        STATE.integrasiEdit = null;
+        STATE.integrasiDraft = null;
+        STATE.integrasiSheets = null;
+        STATE.integrasiSsId = '';
+        STATE.integrasiSheetForm = '';
+        renderIntegrasi();
+      });
+      function isiDaftarSheet() {
+        var urlSs = el('iSs').value.trim();
+        var urlForm = el('iForm').value.trim();
+        if (!urlSs && !urlForm) { el('statusIntegrasi').textContent = 'Isi link form atau link spreadsheet dulu.'; return; }
+        el('statusIntegrasi').textContent = 'Membaca spreadsheet itu...';
+        run('daftarSheetIntegrasi', [urlSs || urlForm]).then(function (h) {
+          STATE.integrasiSheets = h.sheets || [];
+          STATE.integrasiSsId = h.spreadsheetId || '';
+          STATE.integrasiSheetForm = h.saranSheet || '';
+          if (!STATE.integrasiDraft) STATE.integrasiDraft = {};
+          if (h.saranSheet && !el('iSheet').value) {
+            STATE.integrasiDraft.namaSheet = h.saranSheet;
+            if (!urlSs) {
+              el('iSs').value = 'https://docs.google.com/spreadsheets/d/' + h.spreadsheetId + '/edit';
+              STATE.integrasiDraft.urlSpreadsheet = el('iSs').value;
+            }
+          }
+          refreshIsianSheet();
+        }).catch(function (e) { el('statusIntegrasi').textContent = ''; pesan(e, true); });
+      }
+      if (formTerbuka) el('iCariSheet').addEventListener('click', isiDaftarSheet);
+      function kirimSimpan(data, mengedit) {
+        var tombol = el('iSimpan');
+        if (STATE.sedangSimpan) return Promise.resolve(null);
+        STATE.sedangSimpan = true;
+        tombol.disabled = true;
+        tombol.textContent = 'Menyimpan & menguji koneksi...';
+        var lepas = function () {
+          STATE.sedangSimpan = false;
+          if (el('iSimpan')) { el('iSimpan').disabled = false; el('iSimpan').textContent = 'Simpan & Hubungkan'; }
+        };
+        return run(mengedit ? 'ubahIntegrasi' : 'tambahIntegrasi', mengedit ? [STATE.integrasiEdit, data] : [data]).then(function (h) {
+          lepas();
+          STATE.integrasiEdit = null;
+          STATE.integrasiDraft = null;
+          STATE.integrasiSheets = null;
+          STATE.integrasiSsId = '';
+          STATE.integrasiSheetForm = '';
+          bukaTutupDialog();
+          if (h.error) pesan('Tersimpan tapi BELUM terhubung: ' + h.error, true);
+          else pesan('Tersambung ke ' + h.uji.spreadsheetNama + ' / ' + h.uji.sheetNama + ' — ' + h.uji.baris + ' baris, ' +
+            h.uji.dikenali.length + ' kolom utama dikenali.' +
+            (h.brand ? (h.brandBaru ? ' Brand "' + h.brand + '" baru saja ditambahkan ke sidebar.' : ' Brand "' + h.brand + '" sudah menunjuk ke tab ini.') : '') +
+            (h.peringatanPindah ? ' ' + h.peringatanPindah : '') + (h.peringatanTab ? ' CATATAN: ' + h.peringatanTab : ''));
+          if (h.brand) { lupaRows(); return init(); }
+          return muatKonfigLagi();
+        }).catch(function (e) {
+          lepas();
+          var msg = String(e);
+          if (msg.indexOf('Pindahkan jawaban form') !== -1) {
+            mintaKonfirmasi('Tab ini sudah dipakai konfigurasi lain', msg, 'Pindahkan jawaban form', function () {
+              data.pindah = true;
+              kirimSimpan(data, mengedit).catch(function () { /* sudah ditampilkan */ });
+            });
+          } else if (msg.indexOf('Tetap buat') !== -1) {
+            mintaKonfirmasi('Tab ini sudah dipakai konfigurasi lain', msg, 'Tetap buat', function () {
+              data.paksa = true;
+              kirimSimpan(data, mengedit).catch(function () { /* sudah ditampilkan */ });
+            });
+          }
+          if (!galatForm(msg)) pesan(msg, true);
+        });
+      }
+      if (formTerbuka) {
+        el('iSimpan').addEventListener('click', function () { galatForm(''); kirimSimpan(nilaiForm(), !!STATE.integrasiEdit); });
+        el('iNama').addEventListener('input', function () { galatForm(''); });
+      }
+      el('btnSinkronSemua').addEventListener('click', function () {
+        el('statusIntegrasi').textContent = 'Sinkronisasi semua sumber...';
+        run('sinkronSemuaIntegrasi').then(function (h) {
+          el('statusIntegrasi').textContent = h.berhasil.length + ' sumber masuk' + (h.gagal.length ? ', ' + h.gagal.length + ' gagal' : '') + (h.dilewati ? ', ' + h.dilewati + ' nonaktif' : '');
+          if (h.gagal.length) pesan(h.gagal.join(' | '), true);
+          lupaRows();
+          return init();
+        }).catch(function (e) { el('statusIntegrasi').textContent = ''; pesan(e, true); });
+      });
+      el('btnDuplikat').addEventListener('click', function () {
+        pesan('Memeriksa konfigurasi kembar...');
+        run('bersihkanDuplikatIntegrasi', [false]).then(function (h) {
+          if (!h.jumlah) { pesan('Tidak ada konfigurasi kembar — ' + (STATE.integrasi || []).length + ' kartu semuanya beda.'); return; }
+          var dibuang = [];
+          var dipertahankan = [];
+          (h.rencana || []).forEach(function (g) {
+            dipertahankan.push(g.dipertahankan.nama || g.dipertahankan.id);
+            g.dibuang.forEach(function (d) { dibuang.push((d.nama || d.id) + ' (' + d.brand + ')'); });
+          });
+          mintaKonfirmasi(h.jumlah + ' konfigurasi kembar akan dibuang',
+            'Yang dipertahankan: ' + dipertahankan.join(', ') + '. Yang dibuang: ' + dibuang.join(', ') + '. Ini hanya menghapus baris di tab Integrasi — data pendaftar di spreadsheet tidak disentuh, dan brand yang masih punya konfigurasi lain tetap muncul di sidebar.',
+            'Ya, buang ' + h.jumlah, function () {
+              run('bersihkanDuplikatIntegrasi', [true]).then(function (r) {
+                pesan(r.dibuang.length + ' konfigurasi kembar dibuang' + (r.gagal.length ? ' — gagal: ' + r.gagal.join(' | ') : ''), !!r.gagal.length);
+                lupaRows();
+                return init();
+              }).catch(function (e) { pesan(e, true); });
+            });
+        }).catch(function (e) { pesan(e, true); });
+      });
+      el('btnBersihContoh').addEventListener('click', function () {
+        pesan('Memeriksa brand contoh...');
+        run('bersihkanContoh', [false]).then(function (h) {
+          if (!h.jumlah) { pesan('Tidak ada brand contoh yang terdaftar — yang ada hanya brand asli.'); return; }
+          var daftar = (h.rencana || []).map(function (r) {
+            return r.brand + ' (tab ' + (r.tab || '-') + (r.punyaForm ? ' + form CONTOH' : '') + (r.kartu.length ? ' + ' + r.kartu.length + ' kartu' : '') + ')';
+          }).join(', ');
+          mintaKonfirmasi(h.jumlah + ' brand contoh akan dibersihkan',
+            'Yang dibuang: ' + daftar + '. Isinya hanya baris contoh (email @sample.invalid): tab jawabannya, form CONTOH masuk Trash Drive (30 hari masih bisa dipulihkan), kartunya di Integrasi, dan nama brandnya dari sidebar. Pendaftar asli tidak disentuh, dan brand contoh yang di tab-nya masih ada jawaban asli justru ditolak hapus.',
+            'Ya, bersihkan', function () {
+              run('bersihkanContoh', [true]).then(function (r) {
+                var pesan2 = r.dibersihkan.length + ' brand contoh dibersihkan';
+                if (r.gagal.length) pesan2 += ' — ditolak: ' + r.gagal.join(' | ');
+                var ingat = r.dibersihkan.filter(function (d) { return d.peringatan; }).map(function (d) { return d.brand + ': ' + d.peringatan; });
+                if (ingat.length) pesan2 += ' · ' + ingat.join(' | ');
+                pesan(pesan2, !!r.gagal.length);
+                lupaRows();
+                return init();
+              }).catch(function (e) { pesan(e, true); });
+            });
+        }).catch(function (e) { pesan(e, true); });
+      });
+      el('btnAmbilTab').addEventListener('click', function () {
+        var tombol = el('btnAmbilTab');
+        tombol.disabled = true;
+        el('statusAmbilTab').textContent = 'Membaca semua tab di spreadsheet...';
+        run('ambilSemuaTab', [{ urlSpreadsheet: el('iAutoSs').value.trim() }]).then(function (h) {
+          STATE.ambilTab = h;
+          if (h.masuk.length) {
+            pesan(h.masuk.length + ' brand baru masuk ke bilah kiri');
+            lupaRows();
+            return init();
+          }
+          el('statusAmbilTab').textContent = '';
+          tombol.disabled = false;
+          pesan(h.gagal.length ? h.gagal.length + ' tab gagal dibaca, lihat keterangannya.' : 'Tidak ada tab baru — semuanya sudah terbaca dashboard.');
+        }).catch(function (e) {
+          el('statusAmbilTab').textContent = '';
+          tombol.disabled = false;
+          pesan(e, true);
+        });
+      });
+      Array.prototype.forEach.call(el('isiIntegrasi').querySelectorAll('[data-i-uji],[data-i-kolom],[data-i-sinkron],[data-i-edit],[data-i-pindah],[data-i-status],[data-i-hapus],[data-i-akses]'), function (b) {
+        b.addEventListener('click', function () {
+          var akses = b.getAttribute('data-i-akses');
+          if (akses) {
+            var recAkses = STATE.integrasi.filter(function (x) { return x.ID === akses; })[0] || {};
+            var kotak = el('akses-' + akses);
+            b.disabled = true;
+            if (kotak) kotak.textContent = 'Menanya Drive, sebentar...';
+            run('cekAksesTulis', [recAkses['URL Spreadsheet'] || recAkses['Spreadsheet ID'] || '']).then(function (h) {
+              b.disabled = false;
+              if (kotak) kotak.innerHTML = tampilAkses(h.hasil);
+            }).catch(function (e) {
+              b.disabled = false;
+              if (kotak) kotak.innerHTML = '<span style="color:#b91c1c">' + esc(String(e)) + '</span>';
+            });
+            return;
+          }
+          var pindah = b.getAttribute('data-i-pindah');
+          if (pindah) {
+            var recPindah = STATE.integrasi.filter(function (r) { return r.ID === pindah; })[0] || {};
+            mintaKonfirmasi('Pindahkan jawaban form ini?',
+              'Form di kartu "' + (recPindah['Nama Konfigurasi'] || pindah) + '" diarahkan ulang supaya jawaban barunya masuk ke spreadsheet dashboard ini. Tab barunya bernama sama dengan judul form-nya. Jawaban yang sudah masuk sebelumnya tetap di tab lama, tidak ada yang terhapus.',
+              'Ya, pindahkan', function () {
+                b.disabled = true;
+                run('pindahkanTujuanForm', [pindah]).then(function (h) {
+                  pesan(h.ok
+                    ? ('Sekarang form menulis ke tab "' + h.sheetBaru + '" di "' + h.spreadsheet + '" — ' + h.uji.baris + ' baris terbaca.' + (h.peringatan ? ' ' + h.peringatan : '') + ' Isi form 1x lalu Sinkronkan.')
+                    : 'Sudah dipindahkan ke tab "' + h.sheetBaru + '", tapi koneksinya belum kebaca: ' + h.error, !h.ok);
+                  lupaRows();
+                  return muatKonfigLagi();
+                }).catch(function (e) { b.disabled = false; pesan(e, true); });
+              });
+            return;
+          }
+          var hapusKonfig = b.getAttribute('data-i-hapus');
+          if (hapusKonfig) {
+            var recHapus = STATE.integrasi.filter(function (r) { return r.ID === hapusKonfig; })[0] || {};
+            mintaKonfirmasi('Hapus konfigurasi ini?', 'Konfigurasi "' + (recHapus['Nama Konfigurasi'] || hapusKonfig) + '" dibuang dari daftar sumber. Spreadsheet dan tab jawabannya TIDAK ikut terhapus. Kalau brand ini tidak dipakai konfigurasi lain, brandnya juga dilepas dari dashboard.', 'Ya, hapus', function () {
+              // Kartunya dibuang dari layar SEBELUM server balas, supaya klik terasa seketika;
+              // kalau ternyata server menolak, daftar asli dikembalikan oleh init di bawah.
+              var merekHapus = recHapus.Brand || '';
+              STATE.integrasi = (STATE.integrasi || []).filter(function (r) { return r.ID !== hapusKonfig; });
+              STATE.konfigurasi = STATE.konfigurasi || {};
+              STATE.konfigurasi.integrasi = STATE.integrasi;
+              renderIntegrasi();
+              run('hapusIntegrasi', [hapusKonfig]).then(function (h) {
+                pesan('Konfigurasi "' + h.dihapus + '" dihapus' + (h.brandDilepas ? ', brand ' + h.merek + ' ikut dilepas' : '') +
+                  (h.peringatan ? ' — ' + h.peringatan : ''));
+                lupaRows(h.merek);
+                // Brand yang barusan dilepas juga dibuang dari layar sekarang, bukan setelah server selesai.
+                if (h.brandDilepas && merekHapus) {
+                  STATE.overview = (STATE.overview || []).filter(function (o) { return o.brand !== merekHapus; });
+                  if (STATE.brand === merekHapus) { STATE.brand = (STATE.overview[0] || {}).brand || ''; STATE.lingkup = 'semua'; }
+                  renderSidebar();
+                }
+                return h.brandDilepas ? init() : muatKonfigLagi();
+              }).catch(function (e) { pesan(e, true); muatKonfigLagi(); });
+            });
+            return;
+          }
+          var ubahStatus = b.getAttribute('data-i-status');
+          if (ubahStatus) {
+            var bagian = ubahStatus.split('|');
+            run('setelStatusIntegrasi', [bagian[0], bagian[1] === 'Aktif']).then(function () {
+              pesan('Konfigurasi ' + bagian[1].toLowerCase() + '.');
+              return muatKonfigLagi();
+            }).catch(function (e) { pesan(e, true); });
+            return;
+          }
+          var id = b.getAttribute('data-i-uji') || b.getAttribute('data-i-kolom') || b.getAttribute('data-i-sinkron') || b.getAttribute('data-i-edit');
+          if (b.getAttribute('data-i-edit')) {
+            var rec = STATE.integrasi.filter(function (r) { return r.ID === id; })[0];
+            if (!rec) return;
+            STATE.integrasiEdit = rec.ID;
+            STATE.integrasiSheets = null;
+            STATE.integrasiSsId = rec['Spreadsheet ID'] || '';
+            STATE.integrasiSheetForm = '';
+            STATE.integrasiDraft = {
+              nama: rec['Nama Konfigurasi'], brand: rec.Brand, program: rec.Program, urlForm: rec['URL Google Form'],
+              urlEdit: rec['URL Edit Form'], urlSpreadsheet: rec['URL Spreadsheet'], namaSheet: rec['Nama Sheet'], deskripsi: rec.Deskripsi, status: rec.Status,
+            };
+            STATE.integrasiDraftKunci = true;
+            renderIntegrasi();
+            el('iNama').focus();
+            isiDaftarSheet();
+            return;
+          }
+          b.disabled = true;
+          if (b.getAttribute('data-i-uji')) {
+            run('ujiIntegrasi', [id]).then(function (h) {
+              pesan(h.ok ? 'Terhubung: ' + h.uji.baris + ' baris, ' + h.uji.dikenali.length + ' kolom utama dikenali.' : 'Gagal terhubung: ' + h.error, !h.ok);
+              return muatKonfigLagi();
+            }).catch(function (e) { b.disabled = false; pesan(e, true); });
+            return;
+          }
+          if (b.getAttribute('data-i-kolom')) {
+            run('kolomIntegrasi', [id]).then(function (h) {
+              b.disabled = false;
+              el('kolomIntegrasi').innerHTML = '<div class="card" style="margin-top:14px"><h3>Kolom tab ' + esc(h.sheet) + '</h3>' +
+                '<div class="hint">' + h.kolom.length + ' kolom · ' + h.baris + ' baris. Dikenali dashboard: <strong>' + esc(h.dikenali.join(', ') || 'belum ada') + '</strong>. Belum ada kolomnya: ' + esc(h.hilang.join(', ') || 'tidak ada') + '.</div>' +
+                '<div class="sub" style="margin-top:8px">' + esc(h.kolom.join('  ·  ')) + '</div></div>';
+              el('kolomIntegrasi').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }).catch(function (e) { b.disabled = false; pesan(e, true); });
+            return;
+          }
+          run('sinkronIntegrasi', [id]).then(function (h) {
+            if (h.ok) { pesan(h.merek + ': ' + h.baris + ' baris masuk ke dashboard'); lupaRows(); return init(); }
+            pesan('Tidak bisa disinkronkan: ' + (h.alasan || 'gagal'), true);
+            return muatKonfigLagi();
+          }).catch(function (e) { b.disabled = false; pesan(e, true); });
+        });
+      });
+
+      function tampilSisa(h) {
+        var tab = h.tab || [];
+        var form = h.form || [];
+        var kosong = tab.filter(function (t) { return !t.baris; });
+        el('statusSisa').textContent = tab.length + ' tab tertinggal, ' + form.length + ' form tidak terpakai.';
+        var bagian = ['<div class="hint" style="margin-top:8px"><strong>Urutannya:</strong> buang <em>form</em> yang tidak terpakai dulu, baru <em>tab</em>-nya. Google tidak mengizinkan tab jawaban dihapus selama form-nya masih menautkan diri ke situ.</div>'];
+        if (form.length) {
+          bagian.push('<div class="sub" style="margin-top:8px">' + form.map(function (f) { return esc(f.nama); }).join('<br>') + '</div>' +
+            '<div><button class="btn" type="button" id="btnBuangForm" style="margin-top:8px">Buang ' + form.length + ' form ke Trash</button></div>');
+        }
+        if (h.catatan) bagian.push('<div class="hint" style="color:#b91c1c">' + esc(h.catatan) + '</div>');
+        if (tab.length) {
+          bagian.push('<div class="sub" style="margin-top:8px">' + tab.map(function (t) {
+            return esc(t.nama) + ' — ' + t.baris + ' baris' + (t.baris ? ' (isinya masih ada, tidak jadi dihapus)' : ' (kosong)');
+          }).join('<br>') + '</div>' + (kosong.length
+            ? '<div><button class="btn kecil" type="button" id="btnBuangTab" style="margin-top:8px">Buang ' + kosong.length + ' tab kosong</button></div>' : ''));
+        }
+        if (!bagian.length) bagian.push('<div class="kosong" style="margin-top:8px">Tidak ada sisa. Bersih.</div>');
+        el('isiSisa').innerHTML = bagian.join('');
+
+        if (el('btnBuangTab')) el('btnBuangTab').addEventListener('click', function () {
+          mintaKonfirmasi('Buang tab kosong?', 'Hanya tab yang 0 baris yang jadi dihapus. Tab yang masih ada isinya ditolak otomatis.', 'Ya, buang', function () {
+            run('buangTabSisa', [tab]).then(function (r) {
+              var kabar = r.dihapus.length + ' tab dibuang';
+              if ((r.dilepas || []).length) kabar += ', ' + r.dilepas.length + ' tautan form dilepas';
+              if (r.ditolak.length) kabar += ', ' + r.ditolak.length + ' ditolak (' + r.ditolak[0] + ')';
+              pesan(kabar);
+              return run('daftarSisa').then(tampilSisa);
+            }).catch(function (e) { pesan(e, true); });
+          });
+        });
+        if (el('btnBuangForm')) el('btnBuangForm').addEventListener('click', function () {
+          mintaKonfirmasi('Buang form ke Trash?', form.length + ' form tidak terpakai masuk Trash Drive. Masih bisa dipulihkan 30 hari.', 'Ya, buang', function () {
+            run('bersihkanFileProyek', [form.map(function (f) { return f.id; })]).then(function (r) {
+              pesan((r.diTrash || []).length + ' form dibuang' + ((r.ditolak || []).length ? ', ' + r.ditolak.length + ' ditolak' : ''));
+              return run('daftarSisa').then(tampilSisa);
+            }).catch(function (e) { pesan(e, true); });
+          });
+        });
+      }
+
+      el('btnCekSisa').addEventListener('click', function () {
+        el('statusSisa').textContent = 'Menghitung sisa...';
+        run('daftarSisa').then(tampilSisa).catch(function (e) { el('statusSisa').textContent = ''; pesan(e, true); });
+      });
+    }
+
+    function renderSetting(k) {
+        STATE.konfigurasi = k;
+        // Datanya masih berguna, tapi jangan menimpa layar kalau admin sudah pindah menu.
+        if (!el('isiSetting')) return;
+        el('isiSetting').innerHTML =
+          '<div class="card"><h3>Cek sistem</h3>' +
+            '<div class="hint">Sekali klik untuk tahu bagian mana yang terbaca dan mana yang macet. Screenshot hasilnya kalau minta tolong.</div>' +
+            '<button class="btn" type="button" id="btnCekSistem">Jalankan cek sistem</button>' +
+            '<span class="sub" id="statusCek" style="margin-left:10px"></span>' +
+            '<div id="hasilCek"></div></div>' +
+
+          '<div class="card" style="margin-top:14px"><h3>Pakai satu spreadsheet saja</h3>' +
+            '<div class="hint">Semua brand dibaca dari satu file yang sudah ada (1 brand = 1 tab). Tidak ada file baru yang dibuat.</div>' +
+            '<div class="jadwal"><input class="lebar" id="idSatu" placeholder="ID atau link spreadsheet" value="1_jyDo2ZLlhzqI2Qb9ydDPCv_Qmkb3NJH_uzv9Btc63s">' +
+            '<div class="lebar"><button class="btn" type="button" id="btnSatu">Pakai spreadsheet ini</button>' +
+            '<button class="btn subtle" type="button" id="btnPindah" style="margin-left:8px">Pindahkan semua file ke folder Drive</button></div>' +
+            '<span class="sub" id="statusSatu"></span></div></div>' +
+
+          '<div class="card" style="margin-top:14px"><h3>Login aplikasi</h3>' +
+            '<div class="hint">Username + kata kunci ini hanya layar pembuka. Yang benar-benar mengunci data tetap akun Google pemilik aplikasi.</div>' +
+            '<div class="jadwal">' +
+              '<input class="lebar" id="lgUser" placeholder="Username" value="' + esc(k.loginUser || '') + '" autocomplete="username">' +
+              '<input id="lgKey1" type="password" placeholder="Kata kunci baru" autocomplete="new-password">' +
+              '<input id="lgKey2" type="password" placeholder="Ulangi kata kunci" autocomplete="new-password">' +
+              '<div class="lebar"><button class="btn" type="button" id="btnSimpanLogin">' + (k.loginAktif ? 'Ganti kata kunci' : 'Pasang login') + '</button>' +
+                '<span class="sub" id="statusLogin" style="margin-left:10px">' + (k.loginAktif ? 'Login aktif &middot; username <strong>' + esc(k.loginUser) + '</strong>' : 'Belum ada login') + '</span></div>' +
+            '</div></div>' +
+
+          '<div class="card" style="margin-top:14px"><h3>Keterangan sistem</h3><dl class="kv">' +
+              '<dt>Link dashboard (salin dari sini)</dt><dd>' + (k.urlDashboard
+                ? '<input class="lebar" id="linkDash" readonly value="' + esc(k.urlDashboard) + '" onclick="this.select()"><div class="hint">Klik kotak ini lalu tekan Ctrl+C. Versi ' + esc(k.versi) + '.</div>'
+                : '<span class="sub">link belum terbaca, buka lewat script.google.com</span>') + '</dd>' +
+              '<dt>Nama aplikasi</dt><dd>InternAdmin (Dashboard Admin Pendaftaran Magang)</dd>' +
+              '<dt>Versi</dt><dd>' + esc(k.versi) + '</dd>' +
+              '<dt>Status yang dipakai</dt><dd>' + esc(k.statusList.join(', ')) + '</dd>' +
+              '<dt>Pendaftar baru</dt><dd> Semua yang <strong>masih berstatus Seleksi</strong> — sudah mendaftar tetapi belum ada keputusan, berapa pun lama menunggu. Yang sudah Diterima, Lulus, Ditolak, atau Dikeluarkan tidak dihitung lagi.</dd>' +
+              '<dt>Pemagang</dt><dd> Sebutan untuk pendaftar yang sudah <strong>Diterima</strong> atau <strong>Lulus</strong>. Kata ini dipakai di email dan sertifikat. Sejak 9 Nov tahapnya <strong>Seleksi &rarr; Diterima &rarr; Lulus</strong>; tulisan <strong>Ongoing</strong> atau <strong>Berjalan</strong> yang masih ada di spreadsheet lama dibaca sebagai Diterima tanpa mengubah isinya.</dd>' +
+              '<dt>Folder sertifikat</dt><dd>' + (k.folderSertifikat
+                ? '<a href="' + esc(k.folderSertifikat) + '" target="_blank" rel="noopener">Lihat di Drive</a>'
+                : '<span class="sub">belum bisa dibuka aplikasi — data pendaftar tetap jalan</span>') + '</dd>' +
+              '<dt>Log follow-up</dt><dd>' + (k.logUrl
+                ? '<a href="' + esc(k.logUrl) + '" target="_blank" rel="noopener">' + esc(potong(k.logNama, 32)) + '</a> &middot; ' + k.logBaris + ' catatan'
+                : esc(k.logNama)) + '</dd>' +
+              '<dt>Akses dashboard</dt><dd>Hanya akun Google pemilik Web app yang bisa membuka.</dd>' +
+              '<dt>Aplikasi jalan sebagai</dt><dd><strong>' + esc((STATE.bootstrap && (STATE.bootstrap.akunSebenarnya || STATE.bootstrap.akunAplikasi)) || '(anonim — tidak kenal akun)') +
+                '</strong> — akun inilah yang harus ada di daftar Bagikan tiap spreadsheet yang dibaca, dengan peran <strong>Editor</strong> kalau mau mengubah status/catatan di sana.</dd>' +
+            '</dl></div>';
+
+        if (STATE.pesanSetting) el('statusSatu').textContent = STATE.pesanSetting;
+
+        el('btnSimpanLogin').addEventListener('click', function () {
+          var user = el('lgUser').value.trim(), satu = el('lgKey1').value, dua = el('lgKey2').value;
+          if (!user) { pesan('Username belum diisi.', true); return; }
+          if (satu.length < 4) { pesan('Kata kunci baru minimal 4 karakter.', true); return; }
+          if (satu !== dua) { pesan('Penulisan kata kunci belum sama.', true); return; }
+          run('setLogin', [user, satu]).then(function (h) {
+            if (STATE.bootstrap) STATE.bootstrap.butuhLogin = true;
+            pesan(h.dibuat ? 'Login dipasang. Tekan "Keluar" di pojok kanan atas untuk mencoba halaman masuknya.' : 'Kata kunci diperbarui. Tekan "Keluar" untuk masuk dengan yang baru.');
+            el('lgKey1').value = '';
+            el('lgKey2').value = '';
+            return run('getKonfigurasi').then(renderSetting);
+          }).catch(function (e) { pesan(e, true); });
+        });
+
+        el('btnCekSistem').addEventListener('click', function () {
+          el('btnCekSistem').disabled = true;
+          el('statusCek').textContent = 'Memeriksa...';
+          run('cekSistem').then(function (h) {
+            el('btnCekSistem').disabled = false;
+            el('statusCek').textContent = 'Versi ' + h.versi + ' · diperiksa ' + h.waktu;
+            el('hasilCek').innerHTML = '<dl class="kv" style="margin-top:10px">' + (h.hasil || []).map(function (x) {
+              return '<dt>' + esc(x.nama) + '</dt><dd>' + (x.ok ? '<span class="pill hijau">OK</span> ' : '<span class="pill merah">MACET</span> ') + '<span class="sub">' + esc(x.ket) + '</span></dd>';
+            }).join('') + '</dl>';
+          }).catch(function (e) {
+            el('btnCekSistem').disabled = false;
+            el('statusCek').textContent = '';
+            pesan(e, true);
+          });
+        });
+
+        el('btnSatu').addEventListener('click', function () {
+          var id = el('idSatu').value.trim();
+          if (!id) { pesan('Isi ID atau link spreadsheet dulu', true); return; }
+          el('btnSatu').disabled = true;
+          el('statusSatu').textContent = 'Menyiapkan tab di spreadsheet itu...';
+          run('pakaiSatuSpreadsheet', [id]).then(function (h) {
+            STATE.pesanSetting = 'Sekarang semua brand pakai file "' + h.spreadsheet + '".';
+            lupaRows();
+            return init();
+          }).catch(function (e) {
+            el('btnSatu').disabled = false;
+            el('statusSatu').textContent = '';
+            pesan(e, true);
+          });
+        });
+
+        el('btnPindah').addEventListener('click', function () {
+          el('btnPindah').disabled = true;
+          el('statusSatu').textContent = 'Memindahkan file ke folder Drive...';
+          run('pindahFileKeFolder', ['pengelola pendaftaran magang']).then(function (h) {
+            STATE.pesanSetting = h.dipindah.length + ' file masuk folder "' + h.folder + '"' + (h.gagal.length ? ', ' + h.gagal.length + ' gagal: ' + h.gagal[0] : '') + '.';
+            el('statusSatu').textContent = STATE.pesanSetting;
+            el('btnPindah').disabled = false;
+          }).catch(function (e) {
+            el('btnPindah').disabled = false;
+            el('statusSatu').textContent = '';
+            pesan(e, true);
+          });
+        });
+    }
+
+    // ---------- Panel detail ----------
+    // Jadwal wawancara hanya untuk yang masih menunggu keputusan; yang sudah Diterima/Lulus/Ditolak/Dikeluarkan tidak dikasih form lagi.
+    function bagianJadwal(d) {
+      var boleh = d.status === 'Seleksi';
+      if (!boleh) {
+        if (!d.jadwal) return '';
+        return '<div class="section"><h4>Jadwal wawancara</h4><div class="sub">' + esc(d.jadwal) + '</div></div>';
+      }
+      return '<div class="section"><h4>Jadwal wawancara</h4>' +
+        (d.jadwal
+          ? '<div class="sub">' + esc(d.jadwal) + '</div>' +
+            '<div style="margin-top:8px"><button class="btn subtle kecil" type="button" id="jUbah">Ubah jadwal</button></div>'
+          : '') +
+        '<div class="jadwal" id="jForm"' + (d.jadwal ? ' style="display:none;margin-top:10px"' : '') + '><input type="date" id="jTgl">' +
+        '<input type="time" id="jJam" value="10:00">' +
+        '<input class="lebar" id="jLokasi" placeholder="Lokasi atau link meeting">' +
+        '<input class="lebar" id="jCatatan" placeholder="Catatan jadwal, misalnya bawa laptop">' +
+        '<div class="lebar"><button class="btn" type="button" id="jSimpan">Simpan jadwal</button></div></div></div>';
+    }
+
+
+
+    function bagianMagang(d) {
+      // barisKv meng-escape isinya, jadi ke sini cuma boleh teks polos — jangan HTML.
+      var masuk = d.masuk ? d.masuk + (d.masukDariDaftar ? ' (dihitung dari tanggal daftar)' : '') : 'belum kebaca dari form';
+      var berakhir = d.berakhir ? d.berakhir + (d.masukPerkiraan ? ' (dihitung dari durasi)' : '') : 'tidak ada di jawaban form';
+      var kurang = !d.masuk || !d.berakhir;
+      // Tulisan aslinya ditampilkan hanya kalau ada sisi yang tidak terbaca, supaya ketahuan
+      // apakah datanya memang tidak ada atau bentuknya cuma tidak dikenali.
+      var asli = kurang
+        ? (d.jadwalAsli
+            ? '<div class="sub" style="margin-top:6px">Tulisan di form: &quot;' + esc(potong(d.jadwalAsli, 90)) + '&quot;</div>'
+            : '<div class="sub" style="margin-top:6px">Kolom tanggal di form ini kosong, jadi tidak ada yang bisa dibaca.</div>')
+        : '';
+      return '<div class="section"><h4>Tanggal magang</h4>' +
+        '<dl class="kv">' + barisKv('Tanggal masuk magang', masuk) + barisKv('Tanggal berakhir magang', berakhir) + '</dl>' + asli + '</div>';
+    }
+
+    // Draf email dibuat dari status orang ini, jadi tinggal dikoreksi sedikit sebelum dikirim.
+
+
+    function merekDetail() {
+      return (STATE.detail && STATE.detail.brand) || STATE.brand;
+    }
+
+    // Panel dibuka pakai data yang sudah ada di tangan, detailnya dikejar di belakang.
+    function detailSementara(r) {
+      return {
+        row: r.row, brand: r.brand, nama: r.nama, email: r.email, status: r.status,
+        timestamp: r.timestamp, jadwal: r.jadwal || '', dokumenDiperiksa: r.dokumenDiperiksa || '',
+        linkSertifikat: r.linkSertifikat || '', berkas: r.berkas || { ada: 0, total: 0 },
+        berkasList: [], riwayat: [], jawaban: [
+          { label: 'Bidang diminati', nilai: r.minat || '' },
+          { label: 'Asal kampus', nilai: r.kampus || '' },
+          { label: 'Program studi', nilai: r.prodi || '' },
+          { label: 'Rencana mulai', nilai: r.mulai || '' },
+        ].filter(function (j) { return j.nilai; }),
+        jawabanLain: [], history: [], statusList: (STATE.bootstrap && STATE.bootstrap.statusList) || [],
+        sementara: true,
+      };
+    }
+
+    function bukaDetail(rowNum, brand) {
+      var merek = brand || STATE.brand;
+      var punya = STATE.rowsByBrand[merek];
+      var baris = punya ? (punya.rows || []).filter(function (r) { return r.row === rowNum; })[0] : null;
+      if (baris) {
+        STATE.detail = detailSementara(baris);
+        renderPanel();
+      }
+      return run('getDetail', [merek, rowNum]).then(function (d) {
+        STATE.detail = d;
+        renderPanel();
+        if (sedangDaftar()) renderTabelDaftar();
+      }).catch(function (e) { pesan(e, true); });
+    }
+
+    function barisKv(label, nilai) {
+      var v = /^https?:\/\//i.test(nilai)
+        ? '<a href="' + esc(nilai) + '" target="_blank" rel="noopener">' + linkTeks(nilai) + '</a>'
+        : esc(nilai);
+      return '<dt>' + esc(String(label || '').replace(/\?+$/, '')) + '</dt><dd>' + v + '</dd>';
+    }
+
+    function linkTeks(u) {
+      if (u.indexOf('drive.google') !== -1) return 'Buka file di Drive';
+      if (u.indexOf('meet.google') !== -1) return 'Masuk ruang wawancara';
+      if (u.indexOf('youtube') !== -1) return 'Buka video di YouTube';
+      if (u.indexOf('script.google') !== -1) return 'Buka dashboard brand ini';
+      return 'Buka link';
+    }
+
+    function renderPanel() {
+      var d = STATE.detail;
+      if (!d) return;
+      var berkas = d.berkas.total
+        ? '<div class="sub" style="margin-bottom:8px">' + d.berkas.ada + ' dari ' + d.berkas.total + ' berkas dikumpulkan' +
+          (d.dokumenDiperiksa ? ' &middot; ' + esc(d.dokumenDiperiksa) : ' &middot; belum diperiksa') + '</div>'
+        : '';
+      var panel = el('panel');
+      panel.innerHTML =
+        '<div class="panel-head"><div><h3>' + esc(d.nama) + '</h3><div class="sub">' + esc(d.brand) + ' &middot; ' + esc(d.timestamp) + '</div></div>' +
+        '<button class="close" type="button" aria-label="Tutup">&times;</button></div>' +
+        '<div class="panel-body">' +
+          '<dl class="kv">' + barisKv('Email', d.email) +
+            d.jawaban.map(function (j) { return barisKv(j.label, j.nilai); }).join('') + '</dl>' +
+          '<details class="ringkas" style="margin-bottom:6px"><summary>Jawaban lain (' + d.jawabanLain.length + ')</summary>' +
+            '<dl class="kv">' + d.jawabanLain.map(function (j) { return barisKv(j.label, j.nilai); }).join('') + '</dl></details>' +
+
+          '<div class="section"><h4>Status seleksi</h4><div class="status-row">' +
+            d.statusList.map(function (s) {
+              return '<button type="button" class="' + (s === d.status ? 'btn' : 'btn subtle') + '" data-status="' + esc(s) + '">' + esc(s) + '</button>';
+            }).join('') + '</div>' +
+            '<ul class="riwayat" style="margin-top:12px">' + (d.riwayat.length ? d.riwayat.map(function (r) {
+              var bagian = String(r).split(' - ');
+              return '<li><div class="w">' + esc(bagian[0]) + '</div>' + esc(bagian.slice(1).join(' - ')) + '</li>';
+            }).join('') : '<li><div class="w">' + (d.sementara ? 'Memuat riwayat...' : 'Belum ada perubahan status.') + '</div></li>') + '</ul></div>' +
+
+          bagianMagang(d) +
+
+          bagianJadwal(d) +
+
+          '<div class="section"><h4>Berkas pendaftaran</h4>' + berkas +
+            (d.berkasList.length ? '<ul class="riwayat">' + d.berkasList.map(function (b) {
+              return '<li>' + esc(potong(b.label, 40)) + '<div class="w"><a href="' + esc(b.url) + '" target="_blank" rel="noopener">' + linkTeks(b.url) + '</a></div></li>';
+            }).join('') + '</ul>' : '<div class="sub">Tidak ada tautan berkas pada baris ini.</div>') +
+            '<div style="margin-top:10px"><button class="btn subtle" type="button" id="cekDokumen">' +
+            (d.dokumenDiperiksa === 'Sudah diperiksa' ? 'Tandai belum diperiksa' : 'Tandai dokumen diperiksa') + '</button></div></div>' +
+
+          '<div class="section"><h4>Follow-up</h4>' +
+            '<div class="sub" style="margin-bottom:8px">' + (d.email
+              ? (d.emailTerakhir ? 'Email terakhir: ' + esc(d.emailTerakhir) : 'Belum pernah dikirimi email &middot; ' + esc(d.email))
+              : 'Peserta ini tidak punya email di data form') + '</div>' +
+            '<textarea id="catatan" placeholder="Contoh: sudah WA soal jadwal seleksi tahap 1"></textarea>' +
+            (d.email ? '<label class="sub" style="display:block;margin-top:8px"><input type="checkbox" id="kirimEmail" style="margin-right:6px">Kirim catatan ini juga sebagai email ke ' + esc(d.email) + '</label>' : '') +
+            '<button class="btn" type="button" id="simpanFollowup" style="margin-top:8px">Simpan follow-up</button>' +
+            (d.history.length ? '<ul class="riwayat" style="margin-top:14px">' + d.history.map(function (h) {
+              return '<li><div class="w">' + esc(h.waktu) + '</div>' + esc(h.catatan) + '</li>';
+            }).join('') + '</ul>' : '<div class="sub" style="margin-top:10px">Belum ada catatan follow-up.</div>') + '</div>' +
+
+          '<div class="section"><h4>Sertifikat</h4>' +
+            '<button class="btn' + (d.linkSertifikat ? ' subtle' : '') + '" type="button" id="kirimSertifikat"' + (d.linkSertifikat || d.status !== 'Lulus' ? ' disabled' : '') + '>' +
+            (d.linkSertifikat ? 'Sertifikat sudah dikirim' : 'Kirim sertifikat lewat email') + '</button>' +
+            (d.linkSertifikat
+              ? '<a class="sub" style="display:block;margin-top:8px" href="' + esc(d.linkSertifikat) + '" target="_blank" rel="noopener">Lihat berkas sertifikat</a>'
+              : '<div class="sub" style="margin-top:8px">' + (d.status === 'Lulus' ? 'PDF dibuat dan email terkirim ke pendaftar.' : 'Bisa dikirim setelah statusnya Lulus (sekarang: ' + esc(d.status) + ').') + '</div>') + '</div>' +
+        '</div>';
+
+      panel.querySelector('.close').addEventListener('click', tutupPanel);
+      Array.prototype.forEach.call(panel.querySelectorAll('[data-status]'), function (b) {
+        b.addEventListener('click', function () { gantiStatus(b.getAttribute('data-status')); });
+      });
+      var simpanJadwalBtn = panel.querySelector('#jSimpan');
+      if (simpanJadwalBtn) simpanJadwalBtn.addEventListener('click', simpanJadwal);
+      var ubahJadwal = panel.querySelector('#jUbah');
+      if (ubahJadwal) ubahJadwal.addEventListener('click', function () {
+        ubahJadwal.style.display = 'none';
+        panel.querySelector('#jForm').style.display = 'grid';
+        panel.querySelector('#jTgl').focus();
+      });
+      panel.querySelector('#cekDokumen').addEventListener('click', ubahDokumen);
+      panel.querySelector('#simpanFollowup').addEventListener('click', simpanFollowUp);
+      var kirim = panel.querySelector('#kirimSertifikat');
+      if (!kirim.disabled) kirim.addEventListener('click', kirimSertifikat);
+      panel.classList.add('open');
+      el('scrim').classList.add('open');
+    }
+
+    function tutupPanel() {
+      STATE.detail = null;
+      el('panel').classList.remove('open');
+      el('panel').innerHTML = '';
+      el('scrim').classList.remove('open');
+      el('modal').classList.remove('open');
+      if (sedangDaftar()) renderTabelDaftar();
+      if (sedangSeleksi()) tampilSeleksi();
+    }
+
+    function mintaKonfirmasi(judul, pesanText, labelYa, ya, batal) {
+      el('modalJudul').textContent = judul;
+      el('modalPesan').textContent = pesanText;
+      el('modalYa').textContent = labelYa;
+      el('modal').classList.add('open');
+      el('scrim').classList.add('open');
+      // Klik beruntun waktu halamannya lemot pernah membuat satu aksi jalan berkali-kali,
+      // jadi tombol "Ya" ini cuma boleh menghasilkan satu aksi per konfirmasi.
+      var sudahDipakai = false;
+      el('modalYa').onclick = function () {
+        if (sudahDipakai) return;
+        sudahDipakai = true;
+        el('modal').classList.remove('open');
+        if (!STATE.detail) el('scrim').classList.remove('open');
+        ya();
+      };
+      el('modalBatal').onclick = function () {
+        el('modal').classList.remove('open');
+        if (!STATE.detail) el('scrim').classList.remove('open');
+        if (batal) batal(el('modalBatal'));
+      };
+    }
+
+    function mulai() {
+      if (STATE.busy) return false;
+      STATE.busy = true;
+      Array.prototype.forEach.call(el('panel').querySelectorAll('button'), function (b) { b.disabled = true; });
+      return true;
+    }
+
+    function selesai() {
+      STATE.busy = false;
+      var terkirim = !!(STATE.detail && STATE.detail.linkSertifikat);
+      var bolehKirim = STATE.detail && (STATE.detail.status === 'Lulus' || terkirim);
+      Array.prototype.forEach.call(el('panel').querySelectorAll('button'), function (b) {
+        if (b.id === 'kirimSertifikat') { b.disabled = !bolehKirim; return; }
+        b.disabled = false;
+      });
+    }
+
+    function gantiStatus(status) {
+      var d = STATE.detail;
+      if (d.status === status) return;
+      var lanjut = function () {
+        if (!mulai()) return;
+        var rowNum = d.row;
+        var lama = d.status;
+        // Status langsung berubah di layar, server menyusul di belakang.
+        d.status = status;
+        Array.prototype.forEach.call(el('panel').querySelectorAll('[data-status]'), function (b) {
+          b.className = b.getAttribute('data-status') === status ? 'btn' : 'btn subtle';
+        });
+        var diDaftar = STATE.rows.filter(function (r) { return r.row === rowNum; })[0];
+        if (diDaftar) diDaftar.status = status;
+        run('updateStatus', [merekDetail(), rowNum, status]).then(function (res) {
+          // Panel bisa ditutup sebelum server selesai, jadi jangan paksa STATE.detail ada di sini.
+          selesai();
+          if (STATE.detail && STATE.detail.row === rowNum) {
+            STATE.detail.status = status;
+            STATE.detail.riwayat = (STATE.detail.riwayat || []).concat([res.waktu + ' - Status: ' + lama + ' -> ' + status]);
+            renderPanel();
+          }
+          pesan('Status diubah menjadi ' + status);
+          segarkan(merekDetail()).catch(function () {});
+          return null;
+        }).catch(function (e) {
+          d.status = lama;
+          if (diDaftar) diDaftar.status = lama;
+          selesai();
+          pesan(e, true);
+        });
+      };
+      if (status === 'Ditolak' || status === 'Dikeluarkan') {
+        mintaKonfirmasi('Tandai ' + status.toLowerCase() + '?', 'Status ' + d.nama + ' akan menjadi ' + status + ' dan tercatat di riwayat.', 'Ya, tandai', lanjut);
+      } else lanjut();
+    }
+
+    function simpanJadwal() {
+      var d = STATE.detail;
+      var tgl = el('jTgl').value, jam = el('jJam').value;
+      if (!tgl) { pesan('Tanggal wawancara belum dipilih', true); return; }
+      if (!mulai()) return;
+      run('setJadwalWawancara', [merekDetail(), d.row, tgl, jam, el('jLokasi').value, el('jCatatan').value])
+        .then(function (res) {
+          selesai();
+          d.jadwal = res.jadwal;
+          renderPanel();
+          pesan('Jadwal tersimpan: ' + res.jadwal);
+          segarkan(merekDetail()).catch(function () {});
+        }).catch(function (e) { selesai(); pesan(e, true); });
+    }
+
+    function ubahDokumen() {
+      var d = STATE.detail;
+      var nilai = d.dokumenDiperiksa === 'Sudah diperiksa' ? '' : 'Sudah diperiksa';
+      if (!mulai()) return;
+      run('periksaDokumen', [merekDetail(), d.row, nilai]).then(function (res) {
+        selesai();
+        d.dokumenDiperiksa = res.nilai === 'Belum periksa' ? '' : res.nilai;
+        renderPanel();
+        pesan('Dokumen: ' + res.nilai);
+        segarkan(merekDetail()).catch(function () {});
+      }).catch(function (e) { selesai(); pesan(e, true); });
+    }
+
+    function simpanFollowUp() {
+      var d = STATE.detail;
+      var catatan = el('catatan').value.trim();
+      if (!catatan) { pesan('Catatan follow-up belum diisi', true); return; }
+      var ikutEmail = !!(document.getElementById('kirimEmail') || {}).checked;
+      if (!mulai()) return;
+      run('tambahFollowUp', [merekDetail(), d.row, catatan, ikutEmail]).then(function (res) {
+        selesai();
+        d.history = (d.history || []).concat([{ waktu: res.waktu, catatan: catatan }]);
+        el('catatan').value = '';
+        var kotakEmail = document.getElementById('kirimEmail');
+        if (kotakEmail) kotakEmail.checked = false;
+        renderPanel();
+        pesan(res.terkirim ? 'Follow-up disimpan dan email terkirim ke ' + res.terkirim : 'Follow-up disimpan');
+        segarkan(merekDetail()).catch(function () {});
+      }).catch(function (e) { selesai(); pesan(e, true); });
+    }
+
+    function kirimSertifikat() {
+      var d = STATE.detail;
+      if (!mulai()) return;
+      pesan('Membuat dan mengirim sertifikat...');
+      run('kirimSertifikat', [merekDetail(), d.row]).then(function (res) {
+        selesai();
+        pesan('Sertifikat terkirim ke ' + res.email);
+        d.linkSertifikat = res.link;
+        renderPanel();
+        return Promise.all([segarkan(merekDetail()), muatLaporan()]);
+      }).catch(function (e) { selesai(); pesan(e, true); });
+    }
+
+    function kirimSertifikatBaris(rowNum, merek) {
+      pesan('Membuat dan mengirim sertifikat...');
+      run('kirimSertifikat', [merek || STATE.brand, rowNum]).then(function (res) {
+        pesan('Sertifikat terkirim ke ' + res.email);
+        return Promise.all([segarkan(merek || STATE.brand), muatLaporan()]);
+      }).catch(function (e) { pesan(e, true); });
+    }
+
+    // ---------- lain-lain ----------
+    function galatHalaman(e) {
+      el('halaman').innerHTML = '<div class="setup"><h3 style="margin-top:0">Data belum bisa dimuat</h3><p>' + esc(String(e)) + '</p></div>';
+    }
+
+    el('btnMuat').addEventListener('click', function () {
+      var tombol = el('btnMuat');
+      tombol.disabled = true;
+      tombol.textContent = 'Memuat...';
+      lupaRows();
+      STATE.rowsByBrand = {};
+      STATE.dashboardByBrand = {};
+      STATE.laporanCache = null;
+      STATE.prefetch = null;
+      STATE.konfigurasi = null;
+      STATE.halaman = 1;
+      var selesai = function (e) {
+        tombol.disabled = false;
+        tombol.textContent = 'Muat ulang';
+        if (e) pesan(String(e), true);
+      };
+      Promise.resolve(segarkan(STATE.brand))
+        .then(function () { return init(); })
+        .then(function () {
+          var total = (STATE.overview || []).reduce(function (a, o) { return a + (o.total || 0); }, 0);
+          selesai();
+          pesan('Dimuat ulang: ' + total + ' pendaftar, ' + (STATE.overview || []).length + ' brand');
+        })
+        .catch(selesai);
+    });
+
+    el('btnKeluar').addEventListener('click', function () {
+      var keluar = function () {
+        STATE.loginTerbuka = false;
+        var tokenLama = STATE.token;
+        STATE.token = '';
+        try { sessionStorage.removeItem('internadmin.login'); sessionStorage.removeItem('internadmin.token'); } catch (e) { /* abaikan */ }
+        run('keluar', [tokenLama]).catch(function () { /* sesi server dilepas, tidak perlu lapor error */ });
+        renderHalaman();
+        pesan('Keluar. Masukkan username dan kata kunci lagi untuk masuk.');
+      };
+      var keKartuLogin = function () {
+        STATE.page = 'pengaturan';
+        renderSidebar();
+        renderHalaman();
+        var cari = function (percobaan) {
+          var kotak = document.getElementById('lgUser');
+          if (!kotak) { if (percobaan < 12) setTimeout(function () { cari(percobaan + 1); }, 250); return; }
+          kotak.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          kotak.focus();
+          // Layar Pengaturan digambar ulang begitu datanya datang, jadi fokusnya diulang sekali lagi.
+          setTimeout(function () {
+            var lagi = document.getElementById('lgUser');
+            if (lagi) { lagi.scrollIntoView({ behavior: 'smooth', block: 'center' }); lagi.focus(); }
+          }, 900);
+          pesan('Belum ada login di aplikasi ini. Isi username + kata kunci di sini, lalu tekan "Pasang login".');
+        };
+        cari(0);
+      };
+      // Flag dari muat pertama bisa tertinggal (misalnya login baru saja dipasang di tab ini),
+      // jadi kalau flag bilang "belum ada", ditanyakan dulu ke server sebelum menyimpulkan.
+      if (STATE.bootstrap && STATE.bootstrap.butuhLogin) { keluar(); return; }
+      run('getKonfigurasi').then(function (k) {
+        if (k && k.loginAktif) { if (STATE.bootstrap) STATE.bootstrap.butuhLogin = true; keluar(); }
+        else keKartuLogin();
+      }).catch(keKartuLogin);
+    });
+
+    el('btnEkspor').addEventListener('click', function () {
+      pesan('Membuat berkas CSV...');
+      var nomor = saringCepat_(STATE.filter).filter(function (r) { return r.brand === STATE.brand; }).map(function (r) { return r.row; });
+      run('eksporCsv', [STATE.brand, STATE.filter.dari, STATE.filter.sampai, nomor]).then(function (res) {
+        mintaKonfirmasi('Berkas CSV siap', res.jumlahBaris + ' baris · ' + res.nama + ' tersimpan di folder Ekspor Dashboard Magang.', 'Buka berkas', function () {
+          window.open(res.url, '_blank');
+        });
+      }).catch(function (e) { pesan(e, true); });
+    });
+
+    el('dialogScrim').addEventListener('click', function () {
+      STATE.integrasiEdit = null;
+      STATE.integrasiDraft = null;
+      renderIntegrasi();
+    });
+
+    el('scrim').addEventListener('click', function () {
+      if (el('modal').classList.contains('open')) {
+        el('modal').classList.remove('open');
+        if (!STATE.detail) el('scrim').classList.remove('open');
+      } else tutupPanel();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (el('modal').classList.contains('open')) el('modalBatal').click();
+        else if (STATE.detail) tutupPanel();
+      }
+    });
+
+    // Kerangka ditampilkan dulu supaya tidak pernah kelihatan blank putih sambil menunggu server.
+    function renderKerangka() {
+      STATE.overview = [];
+      renderSidebar();
+      el('judulHalaman').textContent = HALAMAN[0].judul;
+      el('subjudul').textContent = 'Menghubungkan ke spreadsheet data...';
+      el('halaman').innerHTML =
+        '<div class="card"><h3 style="margin-top:0">Memuat data pendaftar</h3>' +
+        '<div class="hint">Sedang membaca spreadsheet tiap brand.</div>' +
+        '<div class="hint" id="kerangkaTunggu" style="margin-top:10px"></div></div>';
+    }
+
+    if (localStorage.getItem('sampit') === '1') document.querySelector('.sidebar').classList.add('cil');
+    el('btnSampit').addEventListener('click', function () {
+      var sb = document.querySelector('.sidebar');
+      sb.classList.toggle('cil');
+      localStorage.setItem('sampit', sb.classList.contains('cil') ? '1' : '0');
+    });
+
+    renderKerangka();
+    var tungguLama = setTimeout(function () {
+      var k = el('kerangkaTunggu');
+      if (k) k.textContent = 'Masih memuat. Buka pertama kali memang bisa 20-30 detik, setelah itu cepat.';
+    }, 12000);
+    init().then(function () { clearTimeout(tungguLama); });
+  </script>
+</body>
+</html>
