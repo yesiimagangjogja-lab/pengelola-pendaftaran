@@ -8,3 +8,4 @@ Aplikasi pengelolaan pendaftaran dan reminder nomor berbasis Google Apps Script.
   - `Index.html`: User Interface web app
   - `appsscript.json`: Manifest Google Apps Script
   - `.clasp.json`: Konfigurasi clasp
+
